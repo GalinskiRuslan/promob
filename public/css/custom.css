@@ -1,0 +1,18 @@
+.error-input{
+    color: red !important;
+}
+.agree-input{
+    color: green !important;
+}
+.field_inp{
+    color: gray;
+}
+textarea {
+    height: 150px !important;
+}
+
+
+.graph-modal__search-list--last {
+    border-bottom: 1px solid #818181;
+    padding-bottom: 2rem;
+}
