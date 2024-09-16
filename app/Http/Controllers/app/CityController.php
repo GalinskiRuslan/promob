@@ -14,7 +14,7 @@ class CityController extends Controller
 {
     public function index(Request $request, $city)
     {
-        $corrent_city = City::where('city', $city)->get()->first();
+        $corrent_city = City::where('alias', $city)->get()->first();
         $users = $corrent_city->users()->paginate(20);
         session()->put('city', $corrent_city);
         $params = [

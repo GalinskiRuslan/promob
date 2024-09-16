@@ -162,7 +162,8 @@
     <div class="site-container">
         <header class="header">
             <div class="container header__container">
-                <div class="header__start"><a href="/{{ session('city')->alias }}" class="btn logo header__logo">
+                <div class="header__start">
+                    <a href="/{{ session('city')->alias }}" class="btn logo header__logo">
                         <svg width="95" height="48" viewBox="0 0 95 48" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -257,7 +258,7 @@
                                     @csrf
                                     <a href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                             document.getElementById('logout-form').submit();"
+                                        document.getElementById('logout-form').submit();"
                                         class="btn btn-md btn-icon">
                                         <span class="icon">
                                             <svg>
@@ -382,6 +383,7 @@
                                 <use xlink:href="{{ asset('img/icons/x.svg#svg-x') }}"></use>
                             </svg></span></button>
                 </div>
+
                 <div class="menu__main" data-scroll-lock-scrollable>
                     @auth
                         <ul class="list-reset menu__user menu__user--autorized">
@@ -437,14 +439,6 @@
                             </li>
                         @endforeach
                     </ul>
-                    {{--                <ul class="list-reset menu__nav"> --}}
-                    {{--                    <li> --}}
-                    {{--                        <button type="button" class="btn menu__nav-link">Новости</button> --}}
-                    {{--                    </li> --}}
-                    {{--                    <li> --}}
-                    {{--                        <button type="button" class="btn menu__nav-link">О бренде</button> --}}
-                    {{--                    </li> --}}
-                    {{--                </ul> --}}
                     @auth()
                         <button type="button" class="btn menu__location" data-graph-path="modal-location"><span
                                 class="icon"><svg>
@@ -560,7 +554,7 @@
                         <div class="form-control">
                             <h2 class="form-control__title">Номер</h2>
                             <div class="form-field"><input type="tel" name="tel" class="field"
-                                    placeholder="+7" required>
+                                    data-tel-input placeholder="+7" required>
                             </div>
                             <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации</p>
                         </div>
@@ -726,7 +720,7 @@
                         <div class="form-control">
                             <h2 class="form-control__title">Номер</h2>
                             <div class="form-field"><input type="tel" name="tel" class="field"
-                                    placeholder="+7" required>
+                                    data-tel-input placeholder="+7" required>
                             </div>
                             <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации</p>
                         </div>
@@ -1666,16 +1660,6 @@
                 }
             }
         </style>
-        {{--    <form class="graph-modal__form" id="codeForm"> --}}
-        {{--        <h2 class="graph-modal__form-title">Введите код из письма</h2> --}}
-        {{--        <div class="form-control form-control--code"> --}}
-        {{--            <div class="form-field" ><input type="text" class="field" name="code1" maxlength="1"></div> --}}
-        {{--            <div class="form-field"><input type="text" class="field" name="code2" maxlength="1"></div> --}}
-        {{--            <div class="form-field"><input type="text" class="field" name="code3" maxlength="1"></div> --}}
-        {{--            <div class="form-field"><input type="text" class="field" name="code4" maxlength="1"></div> --}}
-        {{--        </div> --}}
-        {{--    </form> --}}
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const codeForm = document.getElementById('codeForm1');
@@ -1728,9 +1712,6 @@
                                 });
                             }
                         })
-                    // .catch(error => {
-                    //     console.error('Ошибка:', error);
-                    // });
                 }
 
                 // Добавляем обработчик события input для каждого поля ввода
@@ -1787,7 +1768,70 @@
                 });
             });
         </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                let phoneInputs = document.querySelectorAll("input[data-tel-input]");
 
+                let getInputNumbersValue = function(input) {
+                    return input.value.replace(/\D/g, "");
+                };
+
+                let onPhoneInput = function(e) {
+                    let input = e.target,
+                        inputValue = getInputNumbersValue(input),
+                        formattedInputValue = "",
+                        selectionStart = input.selectionStart;
+
+                    if (!inputValue) {
+                        return (input.value = "");
+                    }
+                    if (input.value.length != selectionStart) {
+                        if (e.data && /\D/g.test(e.data)) {
+                            input.value = inputValue;
+                        }
+                        return;
+                    }
+
+                    if (["7", "8"].indexOf(inputValue[0]) > -1) {
+                        //KZ number
+                        let firstSymbols = inputValue[0] == "8" ? "+7" : "+7";
+                        formattedInputValue = firstSymbols + " ";
+
+                        console.log(inputValue[1]);
+                        if (inputValue.length > 1) {
+                            if (inputValue[1] != "7") {
+                                formattedInputValue += "(7" + inputValue.substring(1, 4);
+                            } else {
+                                formattedInputValue += "(" + inputValue.substring(1, 4);
+                            }
+                        }
+                        if (inputValue.length >= 5) {
+                            formattedInputValue += ") " + inputValue.substring(4, 7);
+                        }
+                        if (inputValue.length >= 8) {
+                            formattedInputValue += "-" + inputValue.substring(7, 9);
+                        }
+                        if (inputValue.length >= 10) {
+                            formattedInputValue += "-" + inputValue.substring(9, 11);
+                        }
+                    } else {
+                        formattedInputValue = "+" + inputValue;
+                        // не КЗ номер
+                    }
+                    input.value = formattedInputValue;
+                };
+                let onPhoneKeyDown = function(e) {
+                    if (e.keyCode == 8 && getInputNumbersValue(e.target).length == 1) {
+                        e.target.value = "";
+                    }
+                };
+                for (i = 0; i < phoneInputs.length; i++) {
+                    let input = phoneInputs[i];
+                    input.addEventListener("input", onPhoneInput);
+                    input.addEventListener("keydown", onPhoneKeyDown);
+                }
+            });
+        </script>
     </div>
 </body>
 

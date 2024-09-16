@@ -154,7 +154,6 @@ class RegisterController extends Controller
         ];
 
         $existingUser = User::where('tel', $request->tel)->first();
-
         if ($existingUser && $existingUser->is_verified) {
             return view('app.index', $param);
         }
@@ -162,7 +161,6 @@ class RegisterController extends Controller
         $request->validate([
             'tel' => 'required',
         ]);
-
         $verification_code = rand(1000, 9999);
 
         User::updateOrCreate(
@@ -180,9 +178,11 @@ class RegisterController extends Controller
         try {
             $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
             if ($smsResponse->getData()->error) {
+                dd($smsResponse->getData()->error);
                 return back()->withErrors(['sms' => $smsResponse->getData()->error]);
             };
         } catch (\Exception $e) {
+            dd($e);
             return back()->withErrors(['sms' => $e]);
         }
 
