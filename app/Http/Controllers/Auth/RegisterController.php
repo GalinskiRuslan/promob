@@ -164,7 +164,7 @@ class RegisterController extends Controller
         ];
 
         $existingUser = User::where('tel', $request->tel)->first();
-        if ($existingUser && $existingUser->is_verified) {
+        if ($existingUser && $existingUser->is_verified &&  $existingUser->email) {
             return view('app.index', [...$params, 'active_modal_error' => true,]);
         }
         if (!App::environment('production')) {

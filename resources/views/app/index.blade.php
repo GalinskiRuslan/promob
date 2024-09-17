@@ -21,7 +21,7 @@
                             <li class="hero__bg-features_item">Прямое общение с профессионалами</li>
                             <li class="hero__bg-features_item">Удобный и интуитивный интерфейс</li>
                         </ul>
-                        {{-- <form class="hero__form" method="GET" action="{{ route('search', $corrent_city->alias) }}">
+                        <form class="hero__form" method="GET" action="{{ route('search', $corrent_city->alias) }}">
                             <div class="form-field form-field--search">
                                 <button class="btn form-field__btn">
                                     <span class="icon">
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form> --}}
+                        </form>
                     </div>
                 </div>
             </section>
@@ -111,7 +111,7 @@
                     </ul>
                     <div class="catalog__content">
 
-                        {{-- @if ($users->count() != 0)
+                        @if ($users->count() != 0)
                             @foreach ($users as $user)
                                 <article class="card">
                                     <div class="card__header">
@@ -225,49 +225,7 @@
                                     Увы, в вашем городе пока нет специалистов
                                 </p>
                             </div>
-                        @endif --}}
-
-                        {{--                        <div class="catalog__bottom"> --}}
-                        {{--                            <button type="button" class="btn btn-lg btn-outline-primary catalog__more">Показать еще 20 --}}
-                        {{--                            </button> --}}
-                        {{--                            <ul class="list-reset pagination"> --}}
-                        {{--                                <li class="pagination__item"> --}}
-                        {{--                                    <button type="button" class="btn pagination__prev"><span class="icon"><svg><use --}}
-                        {{--                                                    xlink:href="img/icons/left.svg#svg-left"></use></svg></span> --}}
-                        {{--                                    </button> --}}
-                        {{--                                </li> --}}
-                        {{--                                <li class="pagination__item"> --}}
-                        {{--                                    <ul class="list-reset pagination__page"> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">1</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">2</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">3</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">4</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">5</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">...</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                        <li class="pagination__item"> --}}
-                        {{--                                            <button type="button" class="btn pagination__btn">12</button> --}}
-                        {{--                                        </li> --}}
-                        {{--                                    </ul> --}}
-                        {{--                                </li> --}}
-                        {{--                                <li class="pagination__item"> --}}
-                        {{--                                    <button type="button" class="btn pagination__next"><span class="icon"><svg><use --}}
-                        {{--                                                    xlink:href="img/icons/right.svg#svg-right"></use></svg></span> --}}
-                        {{--                                    </button> --}}
-                        {{--                                </li> --}}
-                        {{--                            </ul> --}}
-                        {{--                        </div> --}}
+                        @endif
                     </div>
                 </div>
             </section>
@@ -291,7 +249,7 @@
         }
     </style>
 @endsection
-{{-- @section('modal_contact')
+@section('modal_contact')
     @foreach ($corrent_city->users as $user)
         @if ($user->whatsapp || $user->instagram)
             <div class="graph-modal__container graph-modal__container--contacts" role="dialog" aria-modal="true"
@@ -362,4 +320,4 @@
             </div>
         @endif
     @endforeach
-@endsection --}}
+@endsection
