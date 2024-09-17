@@ -15,15 +15,19 @@ class CityController extends Controller
     public function index(Request $request, $city)
     {
         $corrent_city = City::where('alias', $city)->get()->first();
-        $users = $corrent_city->users()->paginate(20);
+        if ($corrent_city) {
+            $users = $corrent_city->users()->paginate(20);
+        } else {
+            $users = null;
+            $corrent_city = City::get()->first();
+        }
+
         session()->put('city', $corrent_city);
         $params = [
             'corrent_city' => $corrent_city,
             'city' => $city,
             'users' => $users,
         ];
-
-
         return view('app.index', $params);
     }
     public function city_category(Request $request, $city, $category)

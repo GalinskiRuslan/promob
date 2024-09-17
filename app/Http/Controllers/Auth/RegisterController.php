@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use App\Mail\VerificationMail;
+use App\Models\City;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
@@ -23,6 +25,9 @@ class RegisterController extends Controller
         }
 
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
 
         $users = $corrent_city->users()->paginate(20);
 
@@ -97,6 +102,9 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
 
         $users = $corrent_city->users()->paginate(20);
 
@@ -142,27 +150,37 @@ class RegisterController extends Controller
 
     public function register_sms(Request $request)
     {
+        $request->validate([
+            'tel' => 'required',
+        ]);
         $corrent_city = session('city');
-
         $users = $corrent_city->users()->paginate(20);
+        $city_id = $corrent_city->getKey();
 
-        $param = [
-            'email' => $request->tel,
-            'active_modal_error' => true,
+        $params = [
+            'tel' => $request->tel,
             'corrent_city' => $corrent_city,
             'users' => $users,
         ];
 
         $existingUser = User::where('tel', $request->tel)->first();
         if ($existingUser && $existingUser->is_verified) {
-            return view('app.index', $param);
+            return view('app.index', [...$params, 'active_modal_error' => true,]);
         }
-
-        $request->validate([
-            'tel' => 'required',
-        ]);
-        $verification_code = rand(1000, 9999);
-
+        if (!App::environment('production')) {
+            $verification_code = 9999;
+        } else {
+            $verification_code = rand(1000, 9999);
+            $smsController = new SmsController();
+            try {
+                $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
+                if ($smsResponse->getData()->error) {
+                    return back()->withErrors(['sms' => $smsResponse->getData()->error]);
+                };
+            } catch (\Exception $e) {
+                return back()->withErrors(['sms' => $e]);
+            }
+        }
         User::updateOrCreate(
             ['tel' => $request->tel],
             [
@@ -170,41 +188,30 @@ class RegisterController extends Controller
                 'verification_code' => $verification_code,
                 'role' => $request->role,
                 'gallery' => json_encode([]),
-                'cities_id' => 1,
+                'cities_id' => $city_id,
             ],
         );
 
-        $smsController = new SmsController();
-        try {
-            $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
-            if ($smsResponse->getData()->error) {
-                dd($smsResponse->getData()->error);
-                return back()->withErrors(['sms' => $smsResponse->getData()->error]);
-            };
-        } catch (\Exception $e) {
-            dd($e);
-            return back()->withErrors(['sms' => $e]);
-        }
-
-        $params = [
-            'email' => $request->tel,
-            'active_modal' => 'graph-modal-open fade animate-open',
-            'active_div' => 'is-open',
-            'corrent_city' => $corrent_city,
-            'users' => $users,
-        ];
-
-        return view('app.index', $params);
+        return view('app.index', [...$params, 'active_modal' => 'graph-modal-open fade animate-open', 'active_div' => 'is-open',]);
     }
 
     public function register_view()
     {
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
 
         $params = [
             'corrent_city' => $corrent_city,
         ];
 
         return view('auth.register', $params);
+    }
+    public function send_sms_code(Request $request)
+    {
+        $request->validate([
+            'tel' => 'required',
+        ]);
     }
 }

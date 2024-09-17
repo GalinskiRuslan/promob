@@ -12,12 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function index(Request $request , $id)
+    public function index(Request $request, $id)
     {
         $user = User::where('id', $id)->first();
         $categories = Category::all();
         $cities = City::all();
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
         $params = [
             'cities' => $cities,
             'categories' => $categories,

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    {{--    <link rel="shortcut icon" href="{{ asset('./img/favicon.svg') }}" type="image/x-icon"> --}}
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#111111">
     <title>PROmobilograf</title>
@@ -163,7 +162,7 @@
         <header class="header">
             <div class="container header__container">
                 <div class="header__start">
-                    <a href="/{{ session('city')->alias }}" class="btn logo header__logo">
+                    <a href="/" class="btn logo header__logo">
                         <svg width="95" height="48" viewBox="0 0 95 48" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -231,6 +230,7 @@
                             </svg> </span>{{ $corrent_city->city ?? 'Алматы' }}
                     </button>
                 </div>
+
                 <div class="header__end"><select class="js-choices-language">
                         <option value="ru">rus</option>
                         <option value="kk">kaz</option>
@@ -383,7 +383,6 @@
                                 <use xlink:href="{{ asset('img/icons/x.svg#svg-x') }}"></use>
                             </svg></span></button>
                 </div>
-
                 <div class="menu__main" data-scroll-lock-scrollable>
                     @auth
                         <ul class="list-reset menu__user menu__user--autorized">
@@ -566,7 +565,6 @@
                         <p class="form-hint">Нажимая «Зарегистрироваться», я даю свое согласие на обработку <a
                                 href="#" class="btn btn-inherit text-underline">персональных
                                 данных.</a></p>
-                        {{--                    <a class="graph-modal__switch" style="color: #9161DF; margin-top: 5px; display: block" data-graph-path="modal-signup-client">Зарегестрироваться через почту</a> --}}
                     </form>
                     <div class="graph-modal__switch">
                         <button type="button" class="btn text-underline graph-modal__switch_email"
@@ -1083,10 +1081,6 @@
                                     placeholder="Поиск">
                             </div>
                         </form>
-                        {{--                    <button type="button" class="btn graph-modal__search-gps"><span class="icon"><svg><use --}}
-                        {{--                                    xlink:href="{{ asset('img/icons/navigation.svg#svg-navigation') }}"></use></svg> </span>Определить --}}
-                        {{--                        по геолокации --}}
-                        {{--                    </button> --}}
                         <div class="graph-modal__search-dropdown">
                             <ul class="list-reset graph-modal__search-list" id="searchResults">
 
@@ -1267,11 +1261,6 @@
                             </defs>
                         </svg>
                     </a></div>
-                {{--            <ul class="list-reset footer__nav"> --}}
-                {{--                <li><a href="#" class="btn footer__nav-link">новости</a></li> --}}
-                {{--                <li><a href="#" class="btn footer__nav-link">О бренде</a></li> --}}
-                {{--                <li><a href="#" class="btn footer__nav-link">Рекламодателям</a></li> --}}
-                {{--            </ul> --}}
                 <div class="footer__wrapper">
                     <style>
                         .footer__wrapper {

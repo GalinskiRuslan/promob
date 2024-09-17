@@ -77,6 +77,7 @@ Route::get('/{city}/{category}/search', [SearchController::class, 'search'])->na
 Route::get('/executor/user/{id}', [UserViewController::class, 'index'])->name('user_view');
 Route::get('/card-edit/user/{id}', [UserViewController::class, 'edit'])->name('user_edit');
 Route::delete('/card-edit/user/remove-avatar', [UserViewController::class, 'deleteAvatar'])->name('delete_avatar');
+Route::post('/update-photo-avatar', [UserViewController::class, 'save_new_avatar'])->name('update_photo_avatar');
 
 Route::post('/update-info-portfolio', [UserViewController::class, 'update_first'])->name('update_first');
 Route::post('/update-info-portfolio-dawn', [UserViewController::class, 'update_second'])->name('update_second');

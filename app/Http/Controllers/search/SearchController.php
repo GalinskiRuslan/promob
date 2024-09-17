@@ -11,18 +11,21 @@ use Illuminate\Support\Facades\Session;
 
 class SearchController extends Controller
 {
-    public function search(Request $request, $city , $category = null)
+    public function search(Request $request, $city, $category = null)
     {
 
         $search = $request->search;
         $minValue = $request->min_value;
         $maxValue = $request->max_value;
         $languages = $request->lang;
-        $corrent_city = City::where('alias' , $city)->first();
+        $corrent_city = City::where('alias', $city)->first();
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
         $cityId = $corrent_city->id;
 
-        if(!empty($category)) {
-            $categories = Category::where('alias',$category)->first();
+        if (!empty($category)) {
+            $categories = Category::where('alias', $category)->first();
             $query = User::withCategoriesAndCity([$categories->id], $corrent_city->id);
         } else {
             $query = User::where('cities_id', $cityId);
@@ -64,6 +67,6 @@ class SearchController extends Controller
             'users' => $users,
             'category' => $category,
         ];
-        return view('app.city' , $params);
+        return view('app.city', $params);
     }
 }

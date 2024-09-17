@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\Statistic;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -69,9 +70,13 @@ class UpdateInfoController extends Controller
     public function index()
     {
         $corrent_city = session('city');
-        $params = [
-            'corrent_city' => $corrent_city,
-        ];
-        return view('auth.info',$params);
+        if ($corrent_city) {
+            $params = [
+                'corrent_city' => $corrent_city,
+            ];
+        } else {
+            $params = ['corrent_city' =>  City::get()->first()];
+        }
+        return view('auth.info', $params);
     }
 }

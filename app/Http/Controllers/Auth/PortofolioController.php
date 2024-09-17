@@ -20,6 +20,7 @@ class PortofolioController extends Controller
     public function index()
     {
         $corrent_city = Auth::user()->city;
+
         $params = [
             'corrent_city' => $corrent_city,
         ];
@@ -185,7 +186,7 @@ class PortofolioController extends Controller
         $userGallery = json_decode($user->gallery, true);
 
         if ($fileName = Str::replace('#t=0.001', '', $request->json('fileName'))) {
-            $result = array_filter($userGallery, function($galleryItem) use ($fileName) {
+            $result = array_filter($userGallery, function ($galleryItem) use ($fileName) {
                 return !strpos($galleryItem, $fileName);
             });
         }

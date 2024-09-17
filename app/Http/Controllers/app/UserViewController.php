@@ -24,6 +24,9 @@ class UserViewController extends Controller
         $user->statistic()->increment('view_count');
 
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
 
         $params = [
             'user' => $user,
@@ -36,6 +39,9 @@ class UserViewController extends Controller
     public function edit()
     {
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
 
         $categories = Category::all();
 
@@ -58,7 +64,7 @@ class UserViewController extends Controller
     {
         if ($request->hasFile('file')) {
             $validated = $request->validate([
-                'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:10000',
+                'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
             ]);
 
             $file = $request->file('file');
@@ -140,7 +146,7 @@ class UserViewController extends Controller
             'language' => $languages,
         ];
 
-       if ($request->filled('password')) {
+        if ($request->filled('password')) {
             Log::info('Password is being updated');
             $data['password'] = Hash::make($request->password);
         } else {
@@ -157,7 +163,6 @@ class UserViewController extends Controller
         } else {
             return redirect()->to('/');
         }
-
     }
 
     public function update_second(Request $request)
@@ -190,6 +195,20 @@ class UserViewController extends Controller
         $user->save();
 
         return redirect()->back();
+    }
+
+    public function save_new_avatar(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
+        ]);
+        $file = $request->file('file');
+        $user = Auth::user();
+        $path = $file->storeAs('images' . $user->email, $file->getClientOriginalName(), 'public');
+        $user->photos = $path;
+        $user->save();
+        dd($user);
+        return redirect()->back()->with('avatar', $path);
     }
 
     public function deleteAvatar()

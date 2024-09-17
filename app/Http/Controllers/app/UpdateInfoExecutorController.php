@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\app;
 
 use App\Http\Controllers\Controller;
@@ -16,6 +17,9 @@ class UpdateInfoExecutorController extends Controller
         $categories = Category::all();
         $cities = City::all();
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
         $params = [
             'cities' => $cities,
             'categories' => $categories,
@@ -53,5 +57,4 @@ class UpdateInfoExecutorController extends Controller
 
         return redirect()->route('portfolio');
     }
-
 }
