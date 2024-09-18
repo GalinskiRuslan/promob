@@ -26,7 +26,7 @@ class UpdateInfoController extends Controller
         ]);
 
         $user = User::find(Auth::id());
-
+        dd($user);
         $data = [
             'name' => $request->name,
             'surname' => $request->surname,

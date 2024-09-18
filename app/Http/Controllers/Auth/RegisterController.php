@@ -154,6 +154,9 @@ class RegisterController extends Controller
             'tel' => 'required',
         ]);
         $corrent_city = session('city');
+        if (!$corrent_city) {
+            $corrent_city = City::get()->first();
+        }
         $users = $corrent_city->users()->paginate(20);
         $city_id = $corrent_city->getKey();
 

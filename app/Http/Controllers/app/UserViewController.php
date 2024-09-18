@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maestroerror\HeicToJpg;
 
@@ -68,6 +69,7 @@ class UserViewController extends Controller
             ]);
 
             $file = $request->file('file');
+            dd($file);
 
             if ($validated) {
                 $user = Auth::user();
@@ -105,8 +107,8 @@ class UserViewController extends Controller
             'whatsapp' => 'nullable|string|regex:/^[a-zA-Z0-9+]+$/',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
             'tel' => 'required|string',
-            'cost_from' => 'required|numeric|min:1|max:500000',
-            'cost_up' => 'required|numeric|min:10|max:500000',
+            'cost_from' => 'required|numeric|min:1|max:500000000',
+            'cost_up' => 'required|numeric|min:10|max:5000000000',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -204,10 +206,11 @@ class UserViewController extends Controller
         ]);
         $file = $request->file('file');
         $user = Auth::user();
-        $path = $file->storeAs('images' . $user->email, $file->getClientOriginalName(), 'public');
+        if (!$user->photos) {
+        }
+        $path = $file->storeAs('storage/images' . $user->email, $file->getClientOriginalName(), 'public');
         $user->photos = $path;
         $user->save();
-        dd($user);
         return redirect()->back()->with('avatar', $path);
     }
 

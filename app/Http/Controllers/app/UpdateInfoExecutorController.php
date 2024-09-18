@@ -31,8 +31,9 @@ class UpdateInfoExecutorController extends Controller
     {
 
         $user = User::find(Auth::id());
+        dd($user);
         $request->validate([
-            'cost_up' => 'required|numeric|max:500000',
+            'cost_up' => 'required|numeric|max:50000000',
         ]);
 
         $user->categories_id = $request->categories_id;

@@ -12,9 +12,9 @@
                                     <picture class="card__profile-avatar">
                                         <div class="profile-avatar">
                                             <form style="margin: 0;" class="form section dropzone dropzone-avatar"
-                                                method="POST" action="{{ route('update_first') }}">
+                                                method="POST" action="{{ route('update_photo_avatar') }}">
                                                 <div class="dz-default dz-message">
-
+                                                    @csrf
                                                     <button style="width: 100%; height: 100%;" type="button"
                                                         class="btn dz-upload dz-avatar-upload">
                                                         <picture class="dz-avatar-picture">
@@ -60,9 +60,6 @@
                                         @endif
                                     </div>
                                 </div>
-                                <style>
-
-                                </style>
                                 <div class="card__info">
                                     <a href="{{ route('comments.index', $user->id) }}" class="btn card__reviews"><span
                                             class="icon"><svg>
@@ -230,57 +227,16 @@
                             <div class="fallback">
                                 <input name="gallery[]" type="file" multiple="multiple">
                             </div>
-                            <script>
-                                function deletePortfolioItem() {
-                                    let btnsPortfolioDelete = document.querySelectorAll('.dz-portfolio-delete');
-
-                                    const host = window.location.origin;
-
-                                    btnsPortfolioDelete.forEach(btn => {
-                                        btn.addEventListener('click', function() {
-                                            let portfolioImageWrapper = btn.closest('.dz-preview');
-                                            let fileName = '';
-
-                                            fileName = portfolioImageWrapper.querySelector('img').getAttribute('alt');
-
-                                            if (!fileName) {
-                                                fileName = portfolioImageWrapper.querySelector('.dz-error-mark .dz-filename span')
-                                                    .textContent;
-                                            }
-
-                                            fetch(host + '/registration/portfolio-remove', {
-                                                method: "DELETE",
-                                                body: JSON.stringify({
-                                                    fileName: fileName
-                                                })
-                                            });
-
-                                            portfolioImageWrapper.remove();
-                                        });
-                                    });
-                                }
-                            </script>
-                            <style>
-                                .dz-message {
-                                    max-width: 100% !important;
-                                }
-
-                                .dz-preview .dz-portfolio-delete {
-                                    opacity: 0;
-                                    visibility: hidden;
-                                    transition: .15s all;
-                                }
-
-                                .dz-preview:hover .dz-portfolio-delete {
-                                    opacity: 1;
-                                    visibility: visible;
-                                }
-                            </style>
                         </form>
                     </div>
                 </section>
                 <form style="width: auto;" class="form section" method="POST" action="{{ route('update_first') }}">
                     @csrf
+                    @if ($errors)
+                        @foreach ($errors->all() as $error)
+                            <p class="error">{{ $error }}</p>
+                        @endforeach
+                    @endif
                     <section class="section edit">
                         <div class="container">
                             <div class="section-header">
@@ -297,65 +253,69 @@
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">Имя</h3>
                                     <div class="form-field"><input type="text" class="field"
-                                            value="{{ Auth::user()->name }}" name="name" placeholder="Ввод" required>
+                                            value="{{ old('name', Auth::user()->name) }}" name="name"
+                                            placeholder="Ввод" required>
                                     </div>
                                 </div>
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">Фамилия</h3>
                                     <div class="form-field"><input type="text" class="field"
-                                            value="{{ Auth::user()->surname }}" name="surname" placeholder="Ввод"
-                                            required></div>
+                                            value="{{ old('surname', Auth::user()->surname) }}" name="surname"
+                                            placeholder="Ввод" required></div>
                                 </div>
                                 @if (Auth::user()->role === 'executor')
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">Отчество</h3>
                                         <div class="form-field"><input type="text"
-                                                value="{{ Auth::user()->surname_2 }}" class="field" name="surname_2"
-                                                placeholder="Ввод" required></div>
+                                                value="{{ old('surname_2', Auth::user()->surname_2) }}" class="field"
+                                                name="surname_2" placeholder="Ввод" required></div>
                                     </div>
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">Ник</h3>
                                         <div class="form-field"><input type="text"
-                                                value="{{ Auth::user()->nickname }}" class="field" name="nickname"
-                                                placeholder="Ввод" required></div>
+                                                value="{{ old('nickname', Auth::user()->nickname) }}" class="field"
+                                                name="nickname" placeholder="Ввод" required></div>
                                     </div>
                                     <div class="form-control form-control--horizontal">
                                         <h3 class="h2 form-control__title">В анкете
                                             отображается ник</h3>
                                         <div class="form-field form-field--switch">
                                             <input type="checkbox" class="switch" name="nickname_true"
-                                                {{ Auth::user()->nickname_true ? 'checked' : '' }}>
+                                                {{ old('nickname_true', Auth::user()->nickname_true) ? 'checked' : '' }}>
                                             <span class="switch-slider"></span>
                                         </div>
                                     </div>
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">Сайт (если есть)</h3>
-                                        <div class="form-field"><input type="text" value="{{ Auth::user()->site }}"
-                                                class="field" name="site" placeholder="Ввод">
+                                        <div class="form-field"><input type="text"
+                                                value="{{ old('site', Auth::user()->site) }}" class="field"
+                                                name="site" placeholder="Ввод">
                                         </div>
                                     </div>
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">Инстаграм (если есть)</h3>
                                         <div class="form-field"><input type="text" class="field"
-                                                value="{{ Auth::user()->instagram }}" name="instagram"
+                                                value="{{ old('instagram', Auth::user()->instagram) }}" name="instagram"
                                                 placeholder="Ввод"></div>
                                     </div>
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">WhatsApp</h3>
                                         <div class="form-field"><input type="text"
-                                                value="{{ Auth::user()->whatsapp }}" class="field" name="whatsapp"
-                                                placeholder="Ввод"></div>
+                                                value="{{ old('whatsapp', Auth::user()->whatsapp) }}" class="field"
+                                                name="whatsapp" placeholder="Ввод"></div>
                                     </div>
                                 @endif
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">Email</h3>
                                     <div class="form-field"><input type="email" class="field" name="email"
-                                            value="{{ Auth::user()->email }}" placeholder="Ввод" required></div>
+                                            value="{{ old('email', Auth::user()->email) }}" placeholder="Ввод" required>
+                                    </div>
                                 </div>
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">Телефон</h3>
                                     <div class="form-field"><input type="tel" class="field" name="tel"
-                                            value="{{ Auth::user()->tel }}" placeholder="Ввод"></div>
+                                            data-tel-input value="{{ old('tel', Auth::user()->tel) }}"
+                                            placeholder="Ввод"></div>
                                 </div>
                                 <div class="form-control form-control--last">
                                     <h3 class="h2 form-control__title">Пароль</h3>
@@ -510,29 +470,7 @@
                             <div class="fallback">
                                 <input name="file" type="file">
                             </div>
-                            <script>
-                                function deleteImage() {
-                                    const btnAvatarDelete = document.querySelector('.dz-avatar-delete');
-                                    const defaultAvatar = document.querySelector('.dz-avatar-img');
-                                    const host = window.location.origin;
 
-                                    btnAvatarDelete.addEventListener('click', function(e) {
-                                        e.preventDefault();
-
-                                        fetch(host + '/card-edit/user/remove-avatar', {
-                                            method: "DELETE",
-                                        });
-
-                                        let activeImagePreview = document.querySelector('.dz-preview');
-
-                                        if (activeImagePreview.classList.contains('dz-complete')) {
-                                            let activeImage = activeImagePreview.querySelector('img');
-
-                                            activeImage.src = defaultAvatar.src;
-                                        }
-                                    });
-                                }
-                            </script>
                         </form>
                         <div class="section-header">
                             <h2 class="h1 section-title">Контакты</h2>
@@ -558,7 +496,8 @@
                             <div class="form-control">
                                 <h3 class="form-control__title">Телефон</h3>
                                 <div class="form-field"><input type="tel" class="field" name="tel"
-                                        value="{{ Auth::user()->tel }}" placeholder="Введите ваш телефон"></div>
+                                        data-tel-input value="{{ Auth::user()->tel }}" placeholder="Введите ваш телефон">
+                                </div>
                             </div>
                             <div class="form-control form-control--last">
                                 <h3 class="form-control__title">Пароль</h3>
@@ -724,6 +663,21 @@
                 opacity: 1;
                 visibility: visible;
             }
+
+            .dz-message {
+                max-width: 100% !important;
+            }
+
+            .dz-preview .dz-portfolio-delete {
+                opacity: 0;
+                visibility: hidden;
+                transition: .15s all;
+            }
+
+            .dz-preview:hover .dz-portfolio-delete {
+                opacity: 1;
+                visibility: visible;
+            }
         </style>
         <script>
             function deleteImage() {
@@ -814,6 +768,57 @@
                             portfolioSlide.remove()
                         }
                     });
+                });
+            }
+
+            function deletePortfolioItem() {
+                let btnsPortfolioDelete = document.querySelectorAll('.dz-portfolio-delete');
+
+                const host = window.location.origin;
+
+                btnsPortfolioDelete.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        let portfolioImageWrapper = btn.closest('.dz-preview');
+                        let fileName = '';
+
+                        fileName = portfolioImageWrapper.querySelector('img').getAttribute('alt');
+
+                        if (!fileName) {
+                            fileName = portfolioImageWrapper.querySelector('.dz-error-mark .dz-filename span')
+                                .textContent;
+                        }
+
+                        fetch(host + '/registration/portfolio-remove', {
+                            method: "DELETE",
+                            body: JSON.stringify({
+                                fileName: fileName
+                            })
+                        });
+
+                        portfolioImageWrapper.remove();
+                    });
+                });
+            }
+
+            function deleteImage() {
+                const btnAvatarDelete = document.querySelector('.dz-avatar-delete');
+                const defaultAvatar = document.querySelector('.dz-avatar-img');
+                const host = window.location.origin;
+
+                btnAvatarDelete.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    fetch(host + '/card-edit/user/remove-avatar', {
+                        method: "DELETE",
+                    });
+
+                    let activeImagePreview = document.querySelector('.dz-preview');
+
+                    if (activeImagePreview.classList.contains('dz-complete')) {
+                        let activeImage = activeImagePreview.querySelector('img');
+
+                        activeImage.src = defaultAvatar.src;
+                    }
                 });
             }
         </script>
