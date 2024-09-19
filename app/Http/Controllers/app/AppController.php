@@ -11,7 +11,7 @@ class AppController extends Controller
     {
 
         if (session('city')) {
-            return redirect('/' . session('city')->city);
+            return redirect('/' . session('city')->alias);
         }
         return redirect('/almaty');
     }

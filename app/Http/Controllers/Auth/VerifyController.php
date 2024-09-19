@@ -17,19 +17,19 @@ class VerifyController extends Controller
         $request->validate([
             'verification_code' => 'required|string|size:4',
         ]);
-        $corrent_city = City::where('alias', 'almati')->first();
+        $corrent_city = session('city');
         if (!$corrent_city) {
             $corrent_city = City::get()->first();
         }
-        $user = User::where('email', $request->email)
+        $user = User::where('tel', $request->email)
             ->where('verification_code', $request->verification_code)
             ->first();
+
         if (!$user) {
-            $user = User::where('tel', $request->email)
+            $user = User::where('tel', $request->tel)
                 ->where('verification_code', $request->verification_code)
                 ->first();
         }
-
         if ($user) {
             $newPassword = Str::random(10);
             $user->password = Hash::make($newPassword);

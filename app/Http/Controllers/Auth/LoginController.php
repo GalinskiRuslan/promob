@@ -55,10 +55,10 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             session()->put('password', $request->password);
-            return redirect()->back();
+            return redirect('/');
         }
 
-        return redirect()->back()->withErrors(['email' => 'Неверные данные для входа.']);
+        return redirect('/')->withErrors(['email' => 'Неверные данные для входа.']);
     }
 
     public function resetPasswordConfirmation(Request $request)

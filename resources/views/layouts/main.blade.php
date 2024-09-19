@@ -158,6 +158,7 @@
 </head>
 
 <body class="page__body">
+
     <div class="site-container">
         <header class="header">
             <div class="container header__container">
@@ -269,6 +270,7 @@
                                     </a>
                                 </form>
                             </li>
+                            {{-- @dd(auth()->user()) --}}
                             @if (auth()->user()->role === 'executor')
                                 <li class="user__li">
                                     <a href="{{ route('user_view', \Illuminate\Support\Facades\Auth::user()->id) }}"
@@ -504,7 +506,8 @@
                             <div class="form-field"><input type="email" name="email" class="field"
                                     placeholder="Введите ваш e-mail" required>
                             </div>
-                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации</p>
+                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации
+                            </p>
                         </div>
                         <div class="graph-modal__form-btns">
                             <button type="submit"
@@ -555,7 +558,8 @@
                             <div class="form-field"><input type="tel" name="tel" class="field"
                                     data-tel-input placeholder="+7" required>
                             </div>
-                            <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации</p>
+                            <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации
+                            </p>
                         </div>
                         <div class="graph-modal__form-btns">
                             <button type="submit"
@@ -670,7 +674,8 @@
                             <div class="form-field"><input type="email" name="email" class="field"
                                     placeholder="Введите ваш e-mail" required>
                             </div>
-                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации</p>
+                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации
+                            </p>
                         </div>
                         <div class="graph-modal__form-btns">
                             <button type="submit"
@@ -720,7 +725,8 @@
                             <div class="form-field"><input type="tel" name="tel" class="field"
                                     data-tel-input placeholder="+7" required>
                             </div>
-                            <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации</p>
+                            <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации
+                            </p>
                         </div>
                         <div class="graph-modal__form-btns">
                             <button type="submit"
@@ -818,8 +824,8 @@
                     </p>
 
                     <div class="graph-modal__buttons">
-                        <button type="button" class="btn btn-xl btn-primary graph-modal__buttons-btn"
-                            data-graph-path="modal-signin">
+                        <button click="{{ route('login') }}" type="button"
+                            class="btn btn-xl btn-primary graph-modal__buttons-btn" data-graph-path="modal-signin">
                             Войти
                         </button>
                         <button type="button" class="btn btn-xl btn-primary graph-modal__buttons-btn"
@@ -1075,7 +1081,8 @@
                         <form id="searchForm">
                             <div class="form-field form-field--search">
                                 <button type="submit" class="btn form-field__btn"><span class="icon"><svg>
-                                            <use xlink:href='{{ asset('img/icons/search.svg#svg-search') }}'></use>
+                                            <use xlink:href='{{ asset('img/icons/search.svg#svg-search') }}'>
+                                            </use>
                                         </svg></span></button>
                                 <input type="text" class="field" name="search" id="searchInput"
                                     placeholder="Поиск">
@@ -1165,11 +1172,13 @@
                         <p class="fs-lg fw-600 primary-color">Добро пожаловать на платформу
                             PROmobilograf! Мы рады видеть вас в нашем сообществе медиа-профессионалов. PROmobilograf
                             соединяет талантливых специалистов и заказчиков для успешного сотрудничества</p>
-                        <p class="fs-lg fw-600">PROmobilograf – это платформа, где вы можете найти и предложить услуги
+                        <p class="fs-lg fw-600">PROmobilograf – это платформа, где вы можете найти и предложить
+                            услуги
                             в
                             различных медиа-направлениях, таких как видеосъемка, монтаж, создание контента для
                             социальных
-                            сетей и многое другое. Наша цель – облегчить поиск клиентов и предоставление качественных
+                            сетей и многое другое. Наша цель – облегчить поиск клиентов и предоставление
+                            качественных
                             услуг</p>
                         <p class="fs-lg fw-600 primary-color">Заполните форму регистрации</p>
                         </form>
@@ -1189,7 +1198,8 @@
                         <ul class="fs-lg fw-600">
                             <li>Загрузите портфолио или ссылки на ваши выполненные проекты.</li>
                         </ul>
-                        <p class="fs-lg fw-600 primary-color">Заполните все пункты регистрации, добавьте примеры работ,
+                        <p class="fs-lg fw-600 primary-color">Заполните все пункты регистрации, добавьте примеры
+                            работ,
                             и вы
                             готовы начать работу на PROmobilograf</p>
                     </div>
@@ -1303,17 +1313,20 @@
                     <ul class="list-reset socials footer__socials">
                         <li class="socials__li"><a href="https://www.instagram.com/promobilograf_kz" target="_blank"
                                 class="btn socials__link footer__socials-link"><span class="icon"><svg>
-                                        <use xlink:href="{{ asset('img/icons/instagram.svg#svg-instagram') }}"></use>
+                                        <use xlink:href="{{ asset('img/icons/instagram.svg#svg-instagram') }}">
+                                        </use>
                                     </svg></span></a>
                         </li>
                         <li class="socials__li"><a href="https://t.me/promobilograf_kz" target="_blank"
                                 class="btn socials__link footer__socials-link"><span class="icon"><svg>
-                                        <use xlink:href="{{ asset('img/icons/telegram.svg#svg-telegram') }}"></use>
+                                        <use xlink:href="{{ asset('img/icons/telegram.svg#svg-telegram') }}">
+                                        </use>
                                     </svg></span></a>
                         </li>
                         <li class="socials__li"><a href="https://wa.me/+77022638953" target="_blank"
                                 class="btn socials__link footer__socials-link"><span class="icon"><svg>
-                                        <use xlink:href="{{ asset('img/icons/whatsapp.svg#svg-whatsapp') }}"></use>
+                                        <use xlink:href="{{ asset('img/icons/whatsapp.svg#svg-whatsapp') }}">
+                                        </use>
                                     </svg></span></a>
                         </li>
                     </ul>
@@ -1326,6 +1339,9 @@
             </div>
             <div id="google_translate_element" style="display: none !important;"></div>
         </footer>
+        @if ($errors->any())
+            <x-modal id="errorModal" title="Ошибки"></x-modal>
+        @endif
         <style>
             input,
             .choices__inner {
@@ -1674,6 +1690,7 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}', // Добавляем CSRF токен для защиты
                             },
                             body: JSON.stringify({
+                                tel: '{{ $tel ?? null }}', // Пример получения телефона авторизованного пользователя
                                 email: '{{ $email ?? null }}', // Пример получения email авторизованного пользователя
                                 verification_code: code,
                             }),

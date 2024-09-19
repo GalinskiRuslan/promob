@@ -450,8 +450,8 @@
                         <div class="section-subtitle">
                             <p class="section-text">Загрузите вашу аватарку (макс. размер 10 МБ).</p>
                         </div>
-                        <form action="{{ route('portfolio') }}" class="dropzone dropzone-avatar" method="POST"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('update_photo_avatar') }}" class="dropzone dropzone-avatar"
+                            method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="dz-default dz-message">
                                 <button type="button" class="btn dz-upload dz-avatar-upload">

@@ -194,7 +194,6 @@ class RegisterController extends Controller
                 'cities_id' => $city_id,
             ],
         );
-
         return view('app.index', [...$params, 'active_modal' => 'graph-modal-open fade animate-open', 'active_div' => 'is-open',]);
     }
 
