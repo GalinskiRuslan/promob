@@ -57,8 +57,7 @@ class LoginController extends Controller
             session()->put('password', $request->password);
             return redirect('/');
         }
-
-        return redirect('/')->withErrors(['email' => 'Неверные данные для входа.']);
+        return back()->withErrors(['email' => 'Неверные данные для входа.']);
     }
 
     public function resetPasswordConfirmation(Request $request)

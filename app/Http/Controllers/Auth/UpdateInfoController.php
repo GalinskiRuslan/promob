@@ -19,9 +19,9 @@ class UpdateInfoController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
+            'email' => 'required|string|email|max:255|unique:users,email,',
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
-            'whatsapp' => 'nullable|string|regex:/^[a-zA-Z0-9+]+$/',
+            'whatsapp' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -56,8 +56,7 @@ class UpdateInfoController extends Controller
         $user->save();
 
         session()->put('password', $request->password);
-
-        if (auth()->user()->role === 'executor') {
+        if (Auth::user()->role === 'executor') {
             return redirect()->route('about_executor');
         } else {
             return redirect()->to('/');

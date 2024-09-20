@@ -12,7 +12,8 @@
                                     <picture class="card__profile-avatar">
                                         <div class="profile-avatar">
                                             <form style="margin: 0;" class="form section dropzone dropzone-avatar"
-                                                method="POST" action="{{ route('update_photo_avatar') }}">
+                                                enctype="multipart/form-data" method="POST"
+                                                action="{{ route('update_photo_avatar') }}">
                                                 <div class="dz-default dz-message">
                                                     @csrf
                                                     <button style="width: 100%; height: 100%;" type="button"
@@ -32,7 +33,6 @@
                                                                 </use>
                                                             </svg></span>
                                                     </button>
-
                                                 </div>
                                                 <div class="fallback">
                                                     <input name="file" type="file">

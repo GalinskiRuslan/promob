@@ -7,8 +7,6 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class CityController extends Controller
 {

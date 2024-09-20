@@ -208,9 +208,10 @@ class UserViewController extends Controller
         $user = Auth::user();
         if (!$user->photos) {
         }
-        $path = $file->storeAs('storage/images' . $user->email, $file->getClientOriginalName(), 'public');
+        $path = 'storage/' . $file->storeAs('/images' . $user->email, $file->getClientOriginalName(), 'public');
         $user->photos = $path;
         $user->save();
+        dd($user);
         return redirect()->back()->with('avatar', $path);
     }
 

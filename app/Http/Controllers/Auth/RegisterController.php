@@ -7,6 +7,8 @@ use App\Http\Controllers\SmsController;
 use App\Mail\VerificationMail;
 use App\Models\City;
 use App\Models\User;
+use Error;
+use Exception;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -168,7 +170,9 @@ class RegisterController extends Controller
 
         $existingUser = User::where('tel', $request->tel)->first();
         if ($existingUser && $existingUser->is_verified &&  $existingUser->email) {
-            return view('app.index', [...$params, 'active_modal_error' => true,]);
+            // return view('app.index', [...$params, 'active_modal_error' => true,]);
+            return back()->withErrors(['user' => 'Данный аккаунт уже существует.
+Пожалуйста войдите или используйте другой номер для регистрации']);
         }
         if (!App::environment('production')) {
             $verification_code = 9999;
@@ -181,7 +185,7 @@ class RegisterController extends Controller
                     return back()->withErrors(['sms' => $smsResponse->getData()->error]);
                 };
             } catch (\Exception $e) {
-                return back()->withErrors(['sms' => $e]);
+                return back()->withErrors(['sms' => $e->getMessage()]);
             }
         }
         User::updateOrCreate(

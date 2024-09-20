@@ -904,51 +904,7 @@
                         </div>
                     </form>
                 </div>
-                <script>
-                    const form = document.querySelector('div[data-graph-target="modal-forgot-password"] form');
 
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-
-                        const formData = new FormData(this);
-
-                        fetch('{{ route('reset_password_confirmation') }}', {
-                                method: "POST",
-                                body: formData,
-                            })
-                            .then(response => response.json())
-                            .then(response => {
-                                if (response.status === 'success') {
-                                    const form = document.querySelector(
-                                        'div[data-graph-target="modal-reset-password"] form');
-                                    const inputConfirmationCode = form.querySelector('input[name="confirmationCode"]');
-                                    console.log(inputConfirmationCode);
-                                    const inputEmail = form.querySelector('input[name="email"]');
-                                    const alert = form.querySelector('.alert');
-                                    console.log(alert);
-
-                                    inputEmail.value = response.email;
-
-                                    form.addEventListener('submit', function(e) {
-                                        e.preventDefault();
-
-                                        const formData = new FormData(this);
-
-                                        fetch('{{ route('reset_password') }}', {
-                                                method: "POST",
-                                                body: formData,
-                                            })
-                                            .then(response => response.json())
-                                            .then(response => {
-                                                form.reset();
-
-                                                alert.textContent = response.message;
-                                            });
-                                    });
-                                }
-                            })
-                    });
-                </script>
             </div>
             <div class="graph-modal__container" role="dialog" aria-modal="true"
                 data-graph-target="modal-reset-password">
@@ -1836,6 +1792,49 @@
                     input.addEventListener("input", onPhoneInput);
                     input.addEventListener("keydown", onPhoneKeyDown);
                 }
+            });
+            const form = document.querySelector('div[data-graph-target="modal-forgot-password"] form');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch('{{ route('reset_password_confirmation') }}', {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(response => {
+                        if (response.status === 'success') {
+                            const form = document.querySelector(
+                                'div[data-graph-target="modal-reset-password"] form');
+                            const inputConfirmationCode = form.querySelector('input[name="confirmationCode"]');
+                            console.log(inputConfirmationCode);
+                            const inputEmail = form.querySelector('input[name="email"]');
+                            const alert = form.querySelector('.alert');
+                            console.log(alert);
+
+                            inputEmail.value = response.email;
+
+                            form.addEventListener('submit', function(e) {
+                                e.preventDefault();
+
+                                const formData = new FormData(this);
+
+                                fetch('{{ route('reset_password') }}', {
+                                        method: "POST",
+                                        body: formData,
+                                    })
+                                    .then(response => response.json())
+                                    .then(response => {
+                                        form.reset();
+
+                                        alert.textContent = response.message;
+                                    });
+                            });
+                        }
+                    })
             });
         </script>
     </div>

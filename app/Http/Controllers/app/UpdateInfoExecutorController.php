@@ -14,6 +14,7 @@ class UpdateInfoExecutorController extends Controller
 {
     public function about_executor()
     {
+        dd('wtf');
         $categories = Category::all();
         $cities = City::all();
         $corrent_city = session('city');
