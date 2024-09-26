@@ -158,7 +158,6 @@
 </head>
 
 <body class="page__body">
-
     <div class="site-container">
         <header class="header">
             <div class="container header__container">
@@ -1253,8 +1252,6 @@
                     @if ($count % 5 != 0)
                         </ul>
                     @endif
-
-
                 </div>
                 <ul class="list-reset contacts footer__contact">
                     <li class="contacts__li"><a href="mailto:promobilograf.kz1@gmail.com"

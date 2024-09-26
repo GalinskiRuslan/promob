@@ -66,7 +66,7 @@ Route::prefix('registration')->group(function () {
     Route::post('/verify', [VerifyController::class, 'verify'])->name('verify');
 });
 Route::get('/search', [\App\Http\Controllers\ajax\SearchController::class, 'search'])->name('search.city');
-Route::post('/comments', [CommentController::class, 'store'])->middleware('checkRole:client')->name('comments.store');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::get('/comments/{id}', [CommentController::class, 'index'])->name('comments.index');
 Route::get('/statistics', [StatisticController::class, 'index'])->name('statistic');
 Route::get('/{city}', [CityController::class, 'index'])->name('city');

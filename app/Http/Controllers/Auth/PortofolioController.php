@@ -83,6 +83,7 @@ class PortofolioController extends Controller
     }
     public function store_gallery(Request $request)
     {
+        dd($request->all());
         try {
             if ($request->hasFile('file')) {
                 $validated = $request->validate([
@@ -116,7 +117,7 @@ class PortofolioController extends Controller
                         }
                     }
                 }
-
+                dd($userGallery);
                 if ($validated) {
                     Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
 

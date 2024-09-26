@@ -38,8 +38,6 @@
                                                     <input name="file" type="file">
                                                 </div>
                                             </form>
-
-
                                         </div>
                                     </picture>
                                     <div class="card__profile-info">
@@ -119,7 +117,6 @@
                                             </button>
                                         </li>
                                     @endif
-
                                     @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                         <li class="portfolio__item">
                                             <a class="dz-portfolio-delete" title="Удалить"
@@ -377,29 +374,32 @@
                                     <h3 class="h2 form-control__title">Укажите
                                         стоимость своих услуг</h3>
                                     <div class="form-field"><input type="number" class="field"
-                                            value="{{ $user->cost_from }}" name="cost_from" placeholder="От" required>
+                                            value="{{ old('cost_from', $user->cost_from) }}" name="cost_from"
+                                            placeholder="От" required>
                                     </div>
-                                    <div class="form-field"><input type="number" value="{{ $user->cost_up }}"
+                                    <div class="form-field"><input type="number"
+                                            value="{{ old('cost_up', $user->cost_up) }}"
                                             class="field @error('cost_up') is-invalid @enderror" name="cost_up"
                                             placeholder="До     500000" required></div>
                                 </div>
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">Детали работы</h3>
                                     <div class="form-field">
-                                        <textarea type="text" class="field" name="details" placeholder="Ввод" required>{{ $user->details }}</textarea>
+                                        <textarea type="text" class="field" name="details" placeholder="Ввод" required>{{ old('details', $user->details) }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-control">
                                     <h3 class="h2 form-control__title">О себе</h3>
                                     <div class="form-field">
-                                        <textarea type="text" class="field" name="about_yourself" placeholder="Ввод" required>{{ $user->about_yourself }}</textarea>
+                                        <textarea type="text" class="field" name="about_yourself" placeholder="Ввод" required>{{ old('about_yourself', $user->about_yourself) }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-control form-control--last form-control--double">
                                     <div class="form-control">
                                         <h3 class="h2 form-control__title">Выберите город</h3>
                                         <select class="js-choices" name="cities_id" required>
-                                            <option value="{{ $user->city->id }}">{{ $user->city->city ?? null }}
+                                            <option value="{{ $user->city->id }}">
+                                                {{ old('cities_id', $user->city->city) ?? null }}
                                             </option>
                                             @foreach ($cities as $city)
                                                 <option value="{{ $city->id }}">{{ $city->city }}</option>
@@ -470,7 +470,6 @@
                             <div class="fallback">
                                 <input name="file" type="file">
                             </div>
-
                         </form>
                         <div class="section-header">
                             <h2 class="h1 section-title">Контакты</h2>

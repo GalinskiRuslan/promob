@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maestroerror\HeicToJpg;
 
@@ -67,10 +65,7 @@ class UserViewController extends Controller
             $validated = $request->validate([
                 'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
             ]);
-
             $file = $request->file('file');
-            dd($file);
-
             if ($validated) {
                 $user = Auth::user();
 
@@ -104,8 +99,8 @@ class UserViewController extends Controller
             'surname_2' => 'required|string',
             'nickname' => 'required|string',
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
-            'whatsapp' => 'nullable|string|regex:/^[a-zA-Z0-9+]+$/',
-            'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
+            'whatsapp' => 'nullable|string',
+            'email' => 'required|string|email|max:255|unique:users,email,',
             'tel' => 'required|string',
             'cost_from' => 'required|numeric|min:1|max:500000000',
             'cost_up' => 'required|numeric|min:10|max:5000000000',
@@ -201,17 +196,19 @@ class UserViewController extends Controller
 
     public function save_new_avatar(Request $request)
     {
+
         $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
         ]);
         $file = $request->file('file');
         $user = Auth::user();
-        if (!$user->photos) {
+        if (!$user->email) {
+            $path = 'storage/' . $file->storeAs('/user' . 'tel' . substr($user->tel, 1), 'avatar', 'public');
+        } else {
+            $path = 'storage/' . $file->storeAs('/user' . $user->email, 'avatar', 'public');
         }
-        $path = 'storage/' . $file->storeAs('/images' . $user->email, $file->getClientOriginalName(), 'public');
         $user->photos = $path;
         $user->save();
-        dd($user);
         return redirect()->back()->with('avatar', $path);
     }
 
