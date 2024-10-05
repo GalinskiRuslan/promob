@@ -3,7 +3,7 @@
     <main class="main">
         <h1 class="visually-hidden">Редактирование страницы специалиста</h1>
         <div class="main-sections">
-            @if (Auth::user()->role === 'executor')
+            @if (Auth::user() && Auth::user()->role === 'executor')
                 <section class="section">
                     <div class="container">
                         <div class="card card--light card--edit">

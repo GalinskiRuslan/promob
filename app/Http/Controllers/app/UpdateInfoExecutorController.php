@@ -14,7 +14,6 @@ class UpdateInfoExecutorController extends Controller
 {
     public function about_executor()
     {
-        dd('wtf');
         $categories = Category::all();
         $cities = City::all();
         $corrent_city = session('city');
@@ -32,7 +31,6 @@ class UpdateInfoExecutorController extends Controller
     {
 
         $user = User::find(Auth::id());
-        dd($user);
         $request->validate([
             'cost_up' => 'required|numeric|max:50000000',
         ]);

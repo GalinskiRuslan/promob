@@ -48,7 +48,7 @@ Route::prefix('registration')->group(function () {
     Route::get('/update-info', [UpdateInfoController::class, 'index'])->name('update-info');
     Route::post('/update-info', [UpdateInfoController::class, 'update']);
 
-    Route::middleware(['auth', 'checkRole:executor'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         Route::get('/about-executor', [UpdateInfoExecutorController::class, 'about_executor'])->name('about_executor');
         Route::post('/about-executor', [UpdateInfoExecutorController::class, 'update']);
 

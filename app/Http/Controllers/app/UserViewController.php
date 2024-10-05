@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maestroerror\HeicToJpg;
 
@@ -203,9 +204,12 @@ class UserViewController extends Controller
         $file = $request->file('file');
         $user = Auth::user();
         if (!$user->email) {
-            $path = 'storage/' . $file->storeAs('/user' . 'tel' . substr($user->tel, 1), 'avatar', 'public');
+            // $path = 'storage/' . $file->storeAs('/user' . 'tel' . substr($user->tel, 1), 'avatar', 'public');
+            $path = Storage::disk('s3')->put('uploads', $file);
         } else {
-            $path = 'storage/' . $file->storeAs('/user' . $user->email, 'avatar', 'public');
+            // $path = 'storage/' . $file->storeAs('/user' . $user->email, 'avatar', 'public');
+            $path = Storage::disk('s3')->put('uploads', $file);
+            dd($path);
         }
         $user->photos = $path;
         $user->save();
