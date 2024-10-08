@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
@@ -83,7 +84,7 @@ class PortofolioController extends Controller
     }
     public function store_gallery(Request $request)
     {
-        dd($request->all());
+
         try {
             if ($request->hasFile('file')) {
                 $validated = $request->validate([
@@ -102,7 +103,7 @@ class PortofolioController extends Controller
 
                 $mimeType = $file->getMimeType();
 
-                if (Str::contains($mimeType, 'image') && $fileSize > 10 * 1024 * 1024) return false;
+                if (Str::contains($mimeType, 'image') && $fileSize > 1000 * 1024 * 1024) return false;
 
                 if (Str::contains($mimeType, 'video')) {
                     if ($fileSize > 102400 * 1024 * 1024) return false;
@@ -117,7 +118,6 @@ class PortofolioController extends Controller
                         }
                     }
                 }
-                dd($userGallery);
                 if ($validated) {
                     Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
 
@@ -177,6 +177,13 @@ class PortofolioController extends Controller
             // Логируем любые возникшие исключения
             Log::error('Ошибка при загрузке файла.', ['error' => $e->getMessage()]);
             return response()->json(['error' => 'Ошибка загрузки файла.'], 500);
+        }
+    }
+    public function savePortfolioItem(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $res = Storage::disk('dropbox')->put($request->file->getClientOriginalExtension(), $request->file('file'));
+            dd($res);
         }
     }
 

@@ -39,21 +39,33 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+            'key' => env('S3_KEY'), // Ваш Access Key
+            'secret' => env('S3_SECRET'), // Ваш Secret Key
+            'region' => env('S3_REGION', 'us-east-1'), // Регион, используемый вашим хранилищем
+            'bucket' => env('S3_BUCKET'), // Имя вашего бакета
+            'url' => env('S3_URL'), // URL вашего хранилища
+            'endpoint' => env('S3_ENDPOINT'), // Конечная точка для ps.kz
+        ],
+        'gcs' => [
+            'driver' => 'google-cloud-storage',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'key_file' => env('GOOGLE_CLOUD_KEY_FILE'), // путь к JSON ключу
+            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+            'path_prefix' => null, // (опционально) префикс пути внутри корзины
+            'storage_class' => null, // (опционально) класс хранения
+            'visibility' => 'public', // (опционально) доступность
+        ],
+
+        'dropbox' => [
+            'driver' => 'dropbox',
+            'accessToken' => env('DROPBOX_ACCESS_TOKEN'),
         ],
 
     ],
