@@ -172,7 +172,7 @@ class RegisterController extends Controller
             return back()->withErrors(['user' => 'Данный аккаунт уже существует.
 Пожалуйста войдите или используйте другой номер для регистрации']);
         }
-        if (!App::environment(environments: 'production')) {
+        if (!App::environment('APP_ENV' == 'production')) {
             $verification_code = 9999;
         } else {
             $verification_code = rand(1000, 9999);
