@@ -172,16 +172,19 @@ class RegisterController extends Controller
             return back()->withErrors(['user' => 'Данный аккаунт уже существует.
 Пожалуйста войдите или используйте другой номер для регистрации']);
         }
-
-        $verification_code = rand(1000, 9999);
-        $smsController = new SmsController();
-        try {
-            $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
-            if ($smsResponse->getData()->error) {
-                return back()->withErrors(['sms' => $smsResponse->getData()->error]);
-            };
-        } catch (\Exception $e) {
-            return back()->withErrors(['sms' => $e->getMessage()]);
+        if (!App::environment(environments: 'production')) {
+            $verification_code = 9999;
+        } else {
+            $verification_code = rand(1000, 9999);
+            $smsController = new SmsController();
+            try {
+                $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
+                if ($smsResponse->getData()->error) {
+                    return back()->withErrors(['sms' => $smsResponse->getData()->error]);
+                };
+            } catch (\Exception $e) {
+                return back()->withErrors(['sms' => $e->getMessage()]);
+            }
         }
         User::updateOrCreate(
             ['tel' => $request->tel],
