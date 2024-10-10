@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
-use App\Models\User;
+use Google\Cloud\Storage\StorageClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
 use Maestroerror\HeicToJpg;
 
 class PortofolioController extends Controller
@@ -55,18 +51,13 @@ class PortofolioController extends Controller
                         $path = Str::replace($file->getClientOriginalExtension(), $extension, $path);
                     }
 
-                    Log::info('Путь к файлу после сохранения', ['path' => $path]);
-
                     $user->photos = $path;
 
                     $user->save();
 
-                    Log::info('Данные пользователя успешно обновлены', ['user_id' => $user->id]);
-
                     if ($user->city && $user->city->alias) {
                         return redirect()->to('/' . $user->city->alias);
                     } else {
-                        Log::error('Город пользователя не найден или у города нет алиаса.', ['user' => $user]);
                         return response()->json(['error' => 'Город пользователя не найден или у города нет алиаса.'], 400);
                     }
                 } else {
@@ -119,46 +110,12 @@ class PortofolioController extends Controller
                     }
                 }
                 if ($validated) {
-                    Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
-
                     $path = 'storage/' . $file->storeAs('images/' . $user->email, $file->getClientOriginalName(), 'public');
-
-                    Log::info('Путь к файлу после сохранения', ['path' => $path]);
-
                     $userGallery[] = $path;
-
-                    if (Str::lower($file->getClientOriginalExtension()) === 'heic') {
-                        $extension = 'jpg';
-
-                        HeicToJpg::convert($path)->saveAs(preg_replace('/\.heic$/i', ".$extension", $path));
-
-                        File::delete(public_path($path));
-
-                        $path = Str::replace($file->getClientOriginalExtension(), $extension, $path);
-                    } else {
-                        $extension = $file->getClientOriginalExtension();
-                    }
-
-                    if (Str::contains($mimeType, 'image')) {
-                        $resizeImagePath = 'storage/' . 'images/' . $user->email . '/' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)  . '_350x225.' . $extension;
-
-                        $manager = new ImageManager(Driver::class);
-
-                        $image = $manager->read($path);
-
-                        $image->scale('350', '225');
-
-                        $image->save($resizeImagePath);
-
-                        $userGallery[] = $resizeImagePath;
-                    }
 
                     $user->gallery = json_encode($userGallery);
 
                     $user->save();
-
-                    Log::info('Данные пользователя успешно обновлены', ['user_id' => $user->id]);
-
                     if ($user->city && $user->city->alias) {
                         return redirect()->to('/' . $user->city->alias);
                     } else {
@@ -181,26 +138,32 @@ class PortofolioController extends Controller
     }
     public function savePortfolioItem(Request $request)
     {
+        $user = Auth::user();
         if ($request->hasFile('file')) {
-            $res = Storage::disk('dropbox')->put($request->file->getClientOriginalExtension(), $request->file('file'));
-            dd($res);
+            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
+            $userGallery[] = $path;
+            $user->gallery = json_encode($userGallery);
+            $user->save();
         }
+        return back();
     }
 
     public function deletePortfolioItem(Request $request)
     {
-        $user = auth()->user();
-
+        $user = Auth::user();
         $userGallery = json_decode($user->gallery, true);
-
-        if ($fileName = Str::replace('#t=0.001', '', $request->json('fileName'))) {
-            $result = array_filter($userGallery, function ($galleryItem) use ($fileName) {
-                return !strpos($galleryItem, $fileName);
-            });
+        $cleanPath = str_replace("https://promob.s3.amazonaws.com/", "", $request->fileName);
+        if (in_array($request->fileName, $userGallery)) {
+            $result = array_diff($userGallery, [$request->fileName]);
+            if (Storage::disk('s3')->exists($cleanPath)) {
+                $response = Storage::disk('s3')->delete($cleanPath);
+            } else {
+                return back()->withErrors(['file' => 'Файл не был найден.']);
+            }
+            $user->update([
+                'gallery' => json_encode($result),
+            ]);
         }
-
-        $user->update([
-            'gallery' => json_encode($result),
-        ]);
+        return back();
     }
 }

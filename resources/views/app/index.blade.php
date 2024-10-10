@@ -193,7 +193,7 @@
                                                 <div class="swiper-wrapper">
                                                     @if ($user->gallery)
                                                         @foreach (json_decode($user->gallery, true) as $galleryItem)
-                                                            @if (preg_match('/_350x225\.(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+                                                            @if (preg_match('/(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
                                                                 <div class="swiper-slide">
                                                                     <picture class="swiper-slide-picture">
                                                                         <source srcset="{{ asset($galleryItem) }}"
@@ -219,7 +219,6 @@
                                                 </div>
                                             </div>
                                             <div class="swiper-scrollbar"></div>
-
                                         </div>
 
                                         <div class="card__price"><span class="icon icon-color icon-xl"><svg>

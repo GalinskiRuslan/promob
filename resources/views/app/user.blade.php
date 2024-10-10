@@ -91,10 +91,11 @@
                         <div class="section-header">
                             <h2 class="h1 section-title">Портфолио</h2>
                         </div>
+
                         @if ($user->gallery)
                             <ul class="list-reset portfolio">
                                 @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                    @if (preg_match('/_350x225\.(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+
                                         <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
                                             <picture class="portfolio__item-picture">
                                                 <source srcset="{{ asset($galleryItem) }}" type="image/webp">
@@ -110,7 +111,7 @@
                                                 </span>
                                             </button>
                                         </li>
-                                    @endif
+
 
                                     @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                         <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
@@ -130,9 +131,10 @@
                             <div class="portfolio-swiper swiper-control js-swiper-portfolio">
                                 <div class="swiper">
                                     <div class="swiper-wrapper">
+
                                         @if ($user->gallery)
+
                                             @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                                @if (preg_match('/_350x225\.(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
                                                     <div class="swiper-slide">
                                                         <div class="portfolio__slide">
                                                             <div class="portfolio__item"
@@ -154,8 +156,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                @endif
-
                                                 @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                                     <div class="swiper-slide">
                                                         <div class="portfolio__slide">

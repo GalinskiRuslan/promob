@@ -10,35 +10,47 @@
                             <div class="card__header">
                                 <div class="card__profile">
                                     <picture class="card__profile-avatar">
-                                        <div class="profile-avatar">
-                                            <form style="margin: 0;" class="form section dropzone dropzone-avatar"
-                                                enctype="multipart/form-data" method="POST"
-                                                action="{{ route('update_photo_avatar') }}">
-                                                <div class="dz-default dz-message">
-                                                    @csrf
-                                                    <button style="width: 100%; height: 100%;" type="button"
-                                                        class="btn dz-upload dz-avatar-upload">
-                                                        <picture class="dz-avatar-picture">
-                                                            <source
-                                                                srcset="{{ $user->photos ? asset($user->photos) : asset('./img/avatars/avatar-1.png') }}"
-                                                                type="image/webp">
-                                                            <img loading="lazy"
-                                                                src="{{ $user->photos ? asset($user->photos) : asset('./img/avatars/avatar-1.png') }}"
-                                                                class="dz-avatar-img" width="220" height="220"
-                                                                alt="Картинка">
-                                                        </picture>
-                                                        <span class="icon"><svg>
-                                                                <use
-                                                                    xlink:href="{{ asset('img/icons/camera.svg#svg-camera') }}">
-                                                                </use>
-                                                            </svg></span>
-                                                    </button>
-                                                </div>
-                                                <div class="fallback">
-                                                    <input name="file" type="file">
-                                                </div>
+                                        @if ($user->photos)
+                                            <form action="{{ route('delete_avatar') }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="deleteBtn">X</button>
                                             </form>
-                                        </div>
+                                            <picture class="dz-avatar-picture">
+                                                <source srcset="{{ asset($user->photos) }}" type="image/webp">
+                                                <img loading="lazy" src="{{ asset($user->photos) }}" class="dz-avatar-img"
+                                                    width="220" height="220" alt="Картинка">
+                                            </picture>
+                                        @else
+                                            <div class="profile-avatar">
+                                                <form style="margin: 0;" class="form section dropzone dropzone-avatar"
+                                                    enctype="multipart/form-data" method="POST"
+                                                    action="{{ route('update_photo_avatar') }}">
+                                                    <div class="dz-default dz-message">
+                                                        @csrf
+                                                        <button style="width: 100%; height: 100%;" type="button"
+                                                            class="btn dz-upload dz-avatar-upload">
+                                                            <picture class="dz-avatar-picture">
+                                                                <source srcset="{{ asset('./img/avatars/avatar-1.png') }}"
+                                                                    type="image/webp">
+                                                                <img loading="lazy"
+                                                                    src="{{ asset('./img/avatars/avatar-1.png') }}"
+                                                                    class="dz-avatar-img" width="220" height="220"
+                                                                    alt="Картинка">
+                                                            </picture>
+                                                            <span class="icon"><svg>
+                                                                    <use
+                                                                        xlink:href="{{ asset('img/icons/camera.svg#svg-camera') }}">
+                                                                    </use>
+                                                                </svg></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="fallback">
+                                                        <input name="file" type="file">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        @endif
                                     </picture>
                                     <div class="card__profile-info">
                                         <h3 class="card__profile-name">
@@ -89,10 +101,12 @@
                         <ul class="list-reset portfolio portfolio--edit">
                             @if ($user->gallery)
                                 @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                    @if (preg_match('/_350x225\.(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
-                                        <li class="portfolio__item">
-                                            <a class="dz-portfolio-delete" title="Удалить"
-                                                onclick="deletePortfolioItemProfile()">
+                                    <li class="portfolio__item">
+                                        <form action="{{ route('portfolio_delete') }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="fileName" value="{{ $galleryItem }}">
+                                            <button type="submit" class="dz-portfolio-delete" title="Удалить">
                                                 <svg width="26" height="24" viewBox="0 0 26 24" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
@@ -100,35 +114,38 @@
                                                     <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
-                                            </a>
-                                            <picture class="portfolio__item-picture"
-                                                data-graph-path="portfolio-item{{ $key }}">
-                                                <source srcset="{{ asset($galleryItem) }}" type="image/webp">
-                                                <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                    class="portfolio__item-image" width="350" height="224"
-                                                    alt="Картинка">
-                                            </picture>
-                                            <button type="button" class="btn">
-                                                <span class="icon">
-                                                    <svg>
-                                                        <use xlink:href="img/icons/x.svg#svg-x"></use>
-                                                    </svg>
-                                                </span>
                                             </button>
-                                        </li>
-                                    @endif
+                                        </form>
+                                        <picture class="portfolio__item-picture"
+                                            data-graph-path="portfolio-item{{ $key }}">
+                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
+                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
+                                                class="portfolio__item-image" width="350" height="224" alt="Картинка">
+                                        </picture>
+                                        <button type="button" class="btn">
+                                            <span class="icon">
+                                                <svg>
+                                                    <use xlink:href="img/icons/x.svg#svg-x"></use>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </li>
                                     @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                         <li class="portfolio__item">
-                                            <a class="dz-portfolio-delete" title="Удалить"
-                                                onclick="deletePortfolioItemProfile('video')">
-                                                <svg width="26" height="24" viewBox="0 0 26 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                    <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </a>
+                                            <form action="{{ route('portfolio_delete') }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="fileName" value="{{ $galleryItem }}">
+                                                <button type="submit" class="dz-portfolio-delete" title="Удалить">
+                                                    <svg width="26" height="24" viewBox="0 0 26 24"
+                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </button>
+                                            </form>
                                             <video class="portfolio__item-video" width="350" height="224"
                                                 src="{{ asset($galleryItem) }}#t=0.001" preload="metadata"
                                                 data-graph-path="portfolio-item{{ $key }}"></video>
@@ -149,21 +166,23 @@
                                 <div class="swiper-wrapper">
                                     @if ($user->gallery)
                                         @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                            @if (preg_match('/_350x225\.(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
-                                                <div class="swiper-slide">
-                                                    <div class="portfolio__slide">
-                                                        <div class="portfolio__item">
-                                                            <picture class="portfolio__item-picture"
-                                                                data-graph-path="portfolio-item{{ $key }}">
-                                                                <source srcset="{{ asset($galleryItem) }}"
-                                                                    type="image/webp">
-                                                                <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                                    class="portfolio__item-image" width="350"
-                                                                    height="224" alt="Картинка">
-                                                            </picture>
-                                                            <a style="position:absolute; top: 17px; right: 17px; cursor: pointer; z-index: 10000;"
-                                                                class="dz-portfolio-delete" title="Удалить"
-                                                                onclick="deletePortfolioItemProfile()">
+                                            <div class="swiper-slide">
+                                                <div class="portfolio__slide">
+                                                    <div class="portfolio__item">
+                                                        <picture class="portfolio__item-picture"
+                                                            data-graph-path="portfolio-item{{ $key }}">
+                                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
+                                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
+                                                                class="portfolio__item-image" width="350"
+                                                                height="224" alt="Картинка">
+                                                        </picture>
+                                                        <form action="{{ route('portfolio_delete') }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="hidden" name="fileName"
+                                                                value="{{ $galleryItem }}">
+                                                            <button type="submit" class="dz-portfolio-delete"
+                                                                title="Удалить">
                                                                 <svg width="26" height="24" viewBox="0 0 26 24"
                                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                     <path d="M19.6458 6L6.94922 18" stroke="white"
@@ -173,11 +192,11 @@
                                                                         stroke-width="2" stroke-linecap="round"
                                                                         stroke-linejoin="round" />
                                                                 </svg>
-                                                            </a>
-                                                        </div>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            </div>
                                             @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                                 <div class="swiper-slide">
                                                     <div class="portfolio__slide">
@@ -186,19 +205,26 @@
                                                                 height="224" src="{{ asset($galleryItem) }}#t=0.001"
                                                                 preload="metadata"
                                                                 data-graph-path="portfolio-item{{ $key }}"></video>
-                                                            <a style="position:absolute; top: 17px; right: 17px; cursor: pointer; z-index: 10000;"
-                                                                class="dz-portfolio-delete" title="Удалить"
-                                                                onclick="deletePortfolioItemProfile('video')">
-                                                                <svg width="26" height="24" viewBox="0 0 26 24"
-                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path d="M19.6458 6L6.94922 18" stroke="white"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round" />
-                                                                    <path d="M6.94922 6L19.6458 18" stroke="white"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round" />
-                                                                </svg>
-                                                            </a>
+                                                            <form action="{{ route('portfolio_delete') }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <input type="hidden" name="fileName"
+                                                                    value="{{ $galleryItem }}">
+                                                                <button type="submit" class="dz-portfolio-delete"
+                                                                    title="Удалить">
+                                                                    <svg width="26" height="24"
+                                                                        viewBox="0 0 26 24" fill="none"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M19.6458 6L6.94922 18" stroke="white"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                        <path d="M6.94922 6L19.6458 18" stroke="white"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg>
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -677,149 +703,16 @@
                 opacity: 1;
                 visibility: visible;
             }
+
+            .deleteBtn {
+                position: absolute;
+                z-index: 999;
+                font-size: 28px;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                right: 0;
+            }
         </style>
-        <script>
-            function deleteImage() {
-                const btnAvatarDelete = document.querySelector('.dz-avatar-delete');
-                const defaultAvatarSrc = '/img/avatars/avatar-1.png';
-                const host = window.location.origin;
-
-                btnAvatarDelete.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    fetch(host + '/card-edit/user/remove-avatar', {
-                        method: "DELETE",
-                    });
-
-                    let activeImagePreview = document.querySelector('.dz-preview');
-
-                    if (activeImagePreview.classList.contains('dz-complete')) {
-                        let activeImage = activeImagePreview.querySelector('img');
-
-                        activeImage.src = defaultAvatarSrc;
-                    }
-                });
-            }
-            const formOptions = document.querySelectorAll('.list-reset.form-options .form-option');
-            let countClicks = 0;
-
-            formOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    let optionLabel = option.querySelector('label');
-                    let activeTabs = [0];
-
-                    if (!optionLabel.classList.contains('is-active')) {
-                        if (countClicks === 3) {
-                            optionLabel.classList.remove('is-active');
-                            optionLabel.querySelector('input').checked = false;
-                        }
-                    } else {
-                        countClicks = 0;
-                    }
-
-                    formOptions.forEach(item => {
-                        if (item.querySelector('label').classList.contains('is-active')) {
-                            countClicks = activeTabs.push(item);
-                        }
-                    });
-                });
-            });
-
-            function deleteProfileAvatar() {
-                const btnProfileAvatarDelete = document.querySelector('.profile-avatar-delete');
-                const profileAvatarWrapper = btnProfileAvatarDelete.closest('.card__profile-avatar');
-                const profileAvatarSource = profileAvatarWrapper.querySelector('source');
-                const profileAvatarImg = profileAvatarWrapper.querySelector('img');
-                const host = window.location.origin;
-
-                btnProfileAvatarDelete.addEventListener('click', function() {
-                    profileAvatarSource.srcset = '{{ asset('./img/avatars/avatar-1.png') }}';
-                    profileAvatarImg.src = '{{ asset('./img/avatars/avatar-1.png') }}';
-
-                    fetch(host + '/card-edit/user/remove-avatar', {
-                        method: "DELETE",
-                    });
-                });
-            }
-
-            function deletePortfolioItemProfile(type = 'img') {
-                let btnsPortfolioDelete = document.querySelectorAll('.dz-portfolio-delete');
-                const host = window.location.origin;
-
-                btnsPortfolioDelete.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        let portfolioWrapper = btn.closest('.portfolio__item');
-                        let fileName = portfolioWrapper.querySelector(type).getAttribute('src');
-                        let portfolioSlide = btn.closest('.swiper-slide');
-
-                        fileName = fileName.slice(fileName.lastIndexOf('/') + 1);
-
-                        fetch(host + '/registration/portfolio-remove', {
-                            method: "DELETE",
-                            body: JSON.stringify({
-                                fileName: fileName
-                            })
-                        });
-
-                        portfolioWrapper.remove();
-
-                        if (portfolioSlide) {
-                            portfolioSlide.remove()
-                        }
-                    });
-                });
-            }
-
-            function deletePortfolioItem() {
-                let btnsPortfolioDelete = document.querySelectorAll('.dz-portfolio-delete');
-
-                const host = window.location.origin;
-
-                btnsPortfolioDelete.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        let portfolioImageWrapper = btn.closest('.dz-preview');
-                        let fileName = '';
-
-                        fileName = portfolioImageWrapper.querySelector('img').getAttribute('alt');
-
-                        if (!fileName) {
-                            fileName = portfolioImageWrapper.querySelector('.dz-error-mark .dz-filename span')
-                                .textContent;
-                        }
-
-                        fetch(host + '/registration/portfolio-remove', {
-                            method: "DELETE",
-                            body: JSON.stringify({
-                                fileName: fileName
-                            })
-                        });
-
-                        portfolioImageWrapper.remove();
-                    });
-                });
-            }
-
-            function deleteImage() {
-                const btnAvatarDelete = document.querySelector('.dz-avatar-delete');
-                const defaultAvatar = document.querySelector('.dz-avatar-img');
-                const host = window.location.origin;
-
-                btnAvatarDelete.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    fetch(host + '/card-edit/user/remove-avatar', {
-                        method: "DELETE",
-                    });
-
-                    let activeImagePreview = document.querySelector('.dz-preview');
-
-                    if (activeImagePreview.classList.contains('dz-complete')) {
-                        let activeImage = activeImagePreview.querySelector('img');
-
-                        activeImage.src = defaultAvatar.src;
-                    }
-                });
-            }
-        </script>
     </main>
 @endsection

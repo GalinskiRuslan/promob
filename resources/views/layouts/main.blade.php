@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="theme-color" content="#111111">
     <title>PROmobilograf</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preload" href="{{ asset('fonts/NunitoSans_7pt-Regular.woff2') }}" as="font" type="font/woff2"
         crossorigin>
     <link rel="preload" href="{{ asset('fonts/NunitoSans_7pt-SemiBold.woff2') }}" as="font" type="font/woff2"

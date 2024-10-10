@@ -203,28 +203,24 @@ class UserViewController extends Controller
         ]);
         $file = $request->file('file');
         $user = Auth::user();
-        if (!$user->email) {
-            // $path = 'storage/' . $file->storeAs('/user' . 'tel' . substr($user->tel, 1), 'avatar', 'public');
-            $path = Storage::disk('s3')->put('uploads', $file);
+        if ($user->email) {
+            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
         } else {
-            // $path = 'storage/' . $file->storeAs('/user' . $user->email, 'avatar', 'public');
-            $path = Storage::disk('s3')->put('uploads', $file);
-            dd($path);
+            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
         }
         $user->photos = $path;
         $user->save();
-        return redirect()->back()->with('avatar', $path);
+        return redirect()->back();
     }
 
     public function deleteAvatar()
     {
-        $user = auth()->user();
-
-        if ($user->photos != './img/avatars/avatar-1.png') {
-            $user->update([
-                'photos' => './img/avatars/avatar-1.png',
-            ]);
-        }
+        $user = Auth::user();
+        $clearPath = str_replace("https://promob.s3.amazonaws.com/", "", $user->photos);
+        Storage::disk('s3')->delete($clearPath);
+        $user->photos = null;
+        $user->save();
+        return redirect()->back();
     }
 
     public function deleteProfile()
