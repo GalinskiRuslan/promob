@@ -101,7 +101,7 @@ class UserViewController extends Controller
             'nickname' => 'required|string',
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
             'whatsapp' => 'nullable|string',
-            'email' => 'required|string|email|max:255|unique:users,email,',
+            'email' => 'required|string|email|max:255',
             'tel' => 'required|string',
             'cost_from' => 'required|numeric|min:1|max:500000000',
             'cost_up' => 'required|numeric|min:10|max:5000000000',
@@ -133,8 +133,8 @@ class UserViewController extends Controller
             'site' => $request->site,
             'instagram' => $request->instagram,
             'whatsapp' => $request->whatsapp,
-            'email' => $request->email,
             'tel' => $request->tel,
+            'email' => $request->email,
             'categories_id' => $request->categories_id,
             'cost_from' => $request->cost_from,
             'cost_up' => $request->cost_up,
@@ -153,7 +153,7 @@ class UserViewController extends Controller
 
         $user->fill($data);
 
-        $user->save();
+        $user->update();
 
 
         if (auth()->user()->role === 'executor') {

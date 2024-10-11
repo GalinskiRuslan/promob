@@ -329,12 +329,6 @@
                                     </div>
                                 @endif
                                 <div class="form-control">
-                                    <h3 class="h2 form-control__title">Email</h3>
-                                    <div class="form-field"><input type="email" class="field" name="email"
-                                            value="{{ old('email', Auth::user()->email) }}" placeholder="Ввод" required>
-                                    </div>
-                                </div>
-                                <div class="form-control">
                                     <h3 class="h2 form-control__title">Телефон</h3>
                                     <div class="form-field"><input type="tel" class="field" name="tel"
                                             data-tel-input value="{{ old('tel', Auth::user()->tel) }}"
