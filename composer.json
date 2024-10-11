@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "backpack/crud": "^6.7",
+        "backpack/theme-tabler": "^1.2",
         "google/apiclient": "^2.17",
         "google/cloud-storage": "^1.43",
         "laravel/framework": "^11.9",
@@ -19,6 +20,7 @@
         "spatie/flysystem-dropbox": "^3.0"
     },
     "require-dev": {
+        "backpack/generators": "^4.0",
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
@@ -53,7 +55,8 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
-        ]
+        ],
+        "post-install-cmd": ["@php artisan storage:link --quiet"]
     },
     "extra": {
         "laravel": {

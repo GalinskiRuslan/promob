@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -29,9 +31,9 @@ class Handler extends ExceptionHandler
     }
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+        if ($exception instanceof HttpException && $exception->getStatusCode() == 419) {
             // Редирект на главную страницу при ошибке CSRF (419)
-            return redirect('/');
+            return redirect('/')->with('error', 'Сессия истекла. Пожалуйста, войдите заново');
         }
 
         return parent::render($request, $exception);
