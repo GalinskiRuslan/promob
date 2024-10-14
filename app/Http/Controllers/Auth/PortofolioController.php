@@ -141,9 +141,10 @@ class PortofolioController extends Controller
         $user = Auth::user();
         if ($request->hasFile('file')) {
             $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
-            $userGallery[] = $path;
-            $user->gallery = json_encode($userGallery);
-            $user->save();
+            $userGallery = $user->gallery ? json_decode($user->gallery, true) : []; // Распарсим текущую галерею
+            $userGallery[] = $path; // Добавим новый путь в массив галереи
+            $user->gallery = json_encode($userGallery); // Закодируем массив обратно в JSON
+            $user->save(); // Сохраним пользователя
         }
         return back();
     }

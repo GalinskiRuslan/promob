@@ -101,35 +101,38 @@
                         <ul class="list-reset portfolio portfolio--edit">
                             @if ($user->gallery)
                                 @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                    <li class="portfolio__item">
-                                        <form action="{{ route('portfolio_delete') }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input type="hidden" name="fileName" value="{{ $galleryItem }}">
-                                            <button type="submit" class="dz-portfolio-delete" title="Удалить">
-                                                <svg width="26" height="24" viewBox="0 0 26 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                    <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
+                                    @if (preg_match('/(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+                                        <li class="portfolio__item">
+                                            <form action="{{ route('portfolio_delete') }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="fileName" value="{{ $galleryItem }}">
+                                                <button type="submit" class="dz-portfolio-delete" title="Удалить">
+                                                    <svg width="26" height="24" viewBox="0 0 26 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" />
+                                                        <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            <picture class="portfolio__item-picture"
+                                                data-graph-path="portfolio-item{{ $key }}">
+                                                <source srcset="{{ asset($galleryItem) }}" type="image/webp">
+                                                <img loading="lazy" src="{{ asset($galleryItem) }}"
+                                                    class="portfolio__item-image" width="350" height="224"
+                                                    alt="Картинка">
+                                            </picture>
+                                            <button type="button" class="btn">
+                                                <span class="icon">
+                                                    <svg>
+                                                        <use xlink:href="img/icons/x.svg#svg-x"></use>
+                                                    </svg>
+                                                </span>
                                             </button>
-                                        </form>
-                                        <picture class="portfolio__item-picture"
-                                            data-graph-path="portfolio-item{{ $key }}">
-                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
-                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                class="portfolio__item-image" width="350" height="224" alt="Картинка">
-                                        </picture>
-                                        <button type="button" class="btn">
-                                            <span class="icon">
-                                                <svg>
-                                                    <use xlink:href="img/icons/x.svg#svg-x"></use>
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </li>
+                                        </li>
+                                    @endif
                                     @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                         <li class="portfolio__item">
                                             <form action="{{ route('portfolio_delete') }}" method="POST">
