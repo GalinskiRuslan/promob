@@ -11,7 +11,7 @@ class SmsController
 {
     public function sendSMS($recipient, $verification_code)
     {
-        $apiKey = config('services.mobizon.api_key');
+        $apiKey = env('MOBIKZ_API_KEY');
         $apiDomain = config('services.mobizon.api_domain', 'api.mobizon.kz');
         $message = "Ваш код $verification_code";
 
