@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class SmsController
 {
-    public function sendSMS($recipient , $verification_code)
+    public function sendSMS($recipient, $verification_code)
     {
         $apiKey = config('services.mobizon.api_key');
         $apiDomain = config('services.mobizon.api_domain', 'api.mobizon.kz');
