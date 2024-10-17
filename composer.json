@@ -17,7 +17,8 @@
         "league/flysystem-aws-s3-v3": "^3.29",
         "league/flysystem-google-cloud-storage": "^3.28",
         "masbug/flysystem-google-drive-ext": "^2.4",
-        "spatie/flysystem-dropbox": "^3.0"
+        "spatie/flysystem-dropbox": "^3.0",
+        "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
         "backpack/generators": "^4.0",
