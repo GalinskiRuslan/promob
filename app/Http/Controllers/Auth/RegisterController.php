@@ -176,7 +176,7 @@ class RegisterController extends Controller
         $smsController = new SmsController();
         try {
             $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
-            dd($smsResponse);
+            dd($smsResponse->getContent());
             if ($smsResponse->getStatusCode() != 200) {
                 return back()->withErrors(['sms' => 'Failed to send SMS. Please try again.']);
             }
