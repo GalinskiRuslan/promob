@@ -101,7 +101,6 @@ class UserViewController extends Controller
             'nickname' => 'required|string',
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
             'whatsapp' => 'nullable|string',
-            'email' => 'required|string|email|max:255',
             'tel' => 'required|string',
             'cost_from' => 'required|numeric|min:1|max:500000000',
             'cost_up' => 'required|numeric|min:10|max:5000000000',

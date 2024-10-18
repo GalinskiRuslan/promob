@@ -150,7 +150,7 @@
                                                     @endif
                                                 </div>
                                                 <div>
-                                                    <ul class="list-reset form-options">
+                                                    {{-- <ul class="list-reset form-options">
                                                         @foreach ($user->getCategories() as $category)
                                                             <li class="form-option">
                                                                 <div class="btn btn-lg btn-primary btn-primary--div">
@@ -158,7 +158,7 @@
                                                                 </div>
                                                             </li>
                                                         @endforeach
-                                                    </ul>
+                                                    </ul> --}}
                                                 </div>
                                             </div>
                                             <div class="card__info">
