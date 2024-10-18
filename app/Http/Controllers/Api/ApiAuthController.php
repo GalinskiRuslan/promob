@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterWithMailRequest;
 use App\Http\Services\SmsService;
 use App\Models\User;
 use App\Models\VerifySms;
@@ -117,5 +118,25 @@ class ApiAuthController extends Controller
         }
         $token = JWTAuth::fromUser($user);
         return response()->json(['token' => $token], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response()->json(['message' => 'Вы вышли из аккаунта'], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
+    public function registerWithEmail(RegisterWithMailRequest $request)
+    {
+        $validated = $request->validated();
+        try {
+            $user = User::create([
+                'email' => $validated['email'],
+                'password' => bcrypt($validated['password']),
+                'role' => '',
+            ]);
+
+            return response()->json(['message' => 'Регистрация прошла успешно', 'token' => JWTAuth::fromUser($user)], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 }

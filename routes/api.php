@@ -16,3 +16,5 @@ Route::get('/getSms', [ApiAuthController::class, 'getSmsCode']);
 Route::post('/registrationWithCode', [ApiAuthController::class, 'registrationWithSms']);
 Route::post('/setNewPassword', [ApiAuthController::class, 'setNewPassword']);
 Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/logout', [ApiAuthController::class, 'logout']);
+Route::post('/registerWithEmail', [ApiAuthController::class, 'registerWithEmail']);
