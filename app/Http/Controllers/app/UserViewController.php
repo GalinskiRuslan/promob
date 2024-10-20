@@ -170,7 +170,6 @@ class UserViewController extends Controller
             'cost_from' => 'required|numeric|min:1|max:500000',
             'cost_up' => 'required|numeric|min:10|max:500000',
         ]);
-
         $user->categories_id = $request->categories_id;
         $user->cost_from = $request->cost_from;
         $user->cost_up = $request->cost_up;
@@ -202,6 +201,10 @@ class UserViewController extends Controller
         ]);
         $file = $request->file('file');
         $user = Auth::user();
+        if ($user->photos) {
+            $clearPath = str_replace("https://promob.s3.amazonaws.com/", "", $user->photos);
+            Storage::disk('s3')->delete($clearPath);
+        }
         if ($user->email) {
             $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
         } else {

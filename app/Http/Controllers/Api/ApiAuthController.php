@@ -57,6 +57,7 @@ class ApiAuthController extends Controller
             $request->validate([
                 'code_id' => 'required|string',
                 'code' => 'required|string|size:4',
+                'password' => 'required|string'
             ]);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
@@ -71,6 +72,7 @@ class ApiAuthController extends Controller
             $user = User::create([
                 'tel' => $verifySms->tel,
                 'role' => 'executor',
+                'password' => bcrypt($request->password),
                 'is_verified' => 1
             ]);
             VerifySms::where('code_id', $request->code_id)->delete();

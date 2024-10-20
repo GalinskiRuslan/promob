@@ -10,18 +10,17 @@
                             <div class="card__header">
                                 <div class="card__profile">
                                     <picture class="card__profile-avatar">
-                                        @if ($user->photos)
+                                      {{--   @if ($user->photos)
                                             <form action="{{ route('delete_avatar') }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="deleteBtn">X</button>
                                             </form>
                                             <picture class="dz-avatar-picture">
                                                 <source srcset="{{ asset($user->photos) }}" type="image/webp">
                                                 <img loading="lazy" src="{{ asset($user->photos) }}" class="dz-avatar-img"
                                                     width="220" height="220" alt="Картинка">
                                             </picture>
-                                        @else
+                                        @else --}}
                                             <div class="profile-avatar">
                                                 <form style="margin: 0;" class="form section dropzone dropzone-avatar"
                                                     enctype="multipart/form-data" method="POST"
@@ -31,7 +30,7 @@
                                                         <button style="width: 100%; height: 100%;" type="button"
                                                             class="btn dz-upload dz-avatar-upload">
                                                             <picture class="dz-avatar-picture">
-                                                                <source srcset="{{ asset('./img/avatars/avatar-1.png') }}"
+                                                                <source srcset="{{$user->photos ? asset($user->photos) : asset('./img/avatars/avatar-1.png') }}"
                                                                     type="image/webp">
                                                                 <img loading="lazy"
                                                                     src="{{ asset('./img/avatars/avatar-1.png') }}"
@@ -50,7 +49,7 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                        @endif
+                                        {{-- @endif --}}
                                     </picture>
                                     <div class="card__profile-info">
                                         <h3 class="card__profile-name">
@@ -626,6 +625,8 @@
 
             .dz-portfolio-delete {
                 position: absolute;
+                background: transparent;
+                border: none;
                 right: 20px;
                 top: 20px;
                 cursor: pointer;
