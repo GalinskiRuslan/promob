@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="icon" href="{{ asset('img/favicon.png') }}" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         (function() {
@@ -228,7 +229,7 @@
                     </a>
                     <button class="btn header__location" data-graph-path="modal-location"><span class="icon"><svg>
                                 <use xlink:href="{{ asset('img/icons/location.svg#svg-location') }}"></use>
-                            </svg> </span>{{ $corrent_city->city ?? 'Алматы' }}
+                            </svg> </span>{{ $corrent_city->city ?? 'Выберите город' }}
                     </button>
                 </div>
 
@@ -433,11 +434,11 @@
                             $categories = \App\Models\Category::all();
                         @endphp
                         @foreach ($categories as $category)
-                            <li>
+                            {{--  <li>
                                 <a href="{{ route('city_category', ['city' => $corrent_city->alias, 'category' => $category->alias]) }}"
                                     class="btn menu__job-link"
                                     data-current="{{ App\Models\User::withCategoriesAndCity([$category->id], $corrent_city->id)->get()->count() }}">{{ $category->category }}</a>
-                            </li>
+                            </li> --}}
                         @endforeach
                     </ul>
                     @auth()
@@ -1244,7 +1245,7 @@
                             <ul class="list-reset footer__nav">
                         @endif
                         <li>
-                            <a href="{{ route('city_category', ['city' => $corrent_city->alias, 'category' => $category->alias]) }}"
+                            <a href="{{ route('category', ['category' => $category->alias]) }}"
                                 class="btn footer__nav-link">{{ $category->category }}</a>
                         </li>
                         @php $count++ @endphp

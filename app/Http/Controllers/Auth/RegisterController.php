@@ -173,14 +173,17 @@ class RegisterController extends Controller
 Пожалуйста войдите или используйте другой номер для регистрации']);
         }
         $verification_code = rand(1000, 9999);
-        $smsController = new SmsController();
-        try {
-            $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
-            if (json_decode($smsResponse->getContent())->code != 0) {
-                return back()->withErrors(['sms' => 'Ошибка при отправке SMS. Пожалуйста попробуйте ещё раз.']);
+        if (env('APP_ENV') == 'Dev') {
+        } else {
+            $smsController = new SmsController();
+            try {
+                $smsResponse = $smsController->sendSMS($request->tel, $verification_code);
+                if (json_decode($smsResponse->getContent())->code != 0) {
+                    return back()->withErrors(['sms' => 'Ошибка при отправке SMS. Пожалуйста попробуйте ещё раз.']);
+                }
+            } catch (\Exception $e) {
+                return back()->withErrors(['sms' => $e->getMessage()]);
             }
-        } catch (\Exception $e) {
-            return back()->withErrors(['sms' => $e->getMessage()]);
         }
         User::updateOrCreate(
             ['tel' => $request->tel],

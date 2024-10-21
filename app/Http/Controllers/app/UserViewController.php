@@ -64,36 +64,6 @@ class UserViewController extends Controller
     public function update_first(Request $request)
     {
         $user = Auth::user();
-        if ($request->hasFile('file')) {
-            $validated = $request->validate([
-                'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
-            ]);
-            $file = $request->file('file');
-            if ($validated) {
-                Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
-
-                $path = 'storage/' . $file->storeAs('images/' . $user->email, $file->getClientOriginalName(), 'public');
-
-                if (Str::lower($file->getClientOriginalExtension()) === 'heic') {
-                    $extension = 'jpg';
-
-                    HeicToJpg::convert($path)->saveAs(preg_replace('/\.heic$/i', ".$extension", $path));
-
-                    File::delete(public_path($path));
-
-                    $path = Str::replace($file->getClientOriginalExtension(), $extension, $path);
-                }
-
-                Log::info('Путь к файлу после сохранения', ['path' => $path]);
-
-                $user->photos = $path;
-
-                $user->save();
-
-                Log::info('Данные пользователя успешно обновлены', ['user_id' => $user->id]);
-            }
-        }
-
         $request->validate([
             'name' => 'required|string',
             'surname' => 'required|string',

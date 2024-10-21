@@ -26,7 +26,7 @@ class CityController extends Controller
             'city' => $city,
             'users' => $users,
         ];
-        return view('app.index', $params);
+        return view('app.city', $params);
     }
     public function city_category(Request $request, $city, $category)
     {

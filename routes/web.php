@@ -70,6 +70,7 @@ Route::post('/comments', [CommentController::class, 'store'])->name('comments.st
 Route::get('/comments/{id}', [CommentController::class, 'index'])->name('comments.index');
 Route::get('/statistics', [StatisticController::class, 'index'])->name('statistic');
 Route::get('/{city}', [CityController::class, 'index'])->name('city');
+Route::get('/category/{category}', [AppController::class, 'category'])->name('category');
 Route::get('/{city}/search', [SearchController::class, 'search'])->name('search');
 Route::get('/{city}/{category}', [CityController::class, 'city_category'])->name('city_category');
 Route::get('/{city}/{category}/search', [SearchController::class, 'search'])->name('search_category');
