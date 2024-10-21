@@ -100,7 +100,7 @@
                     <ul class="list-reset menu__job menu__job--catalog">
 
                         @php
-                            $categories = \App\Models\Category::all();
+                            $categories = \App\Models\Category::all()->reverse();
                         @endphp
                         @foreach($categories as $category)
                             <li>

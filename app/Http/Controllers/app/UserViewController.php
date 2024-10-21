@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Maestroerror\HeicToJpg;
 
 class UserViewController extends Controller
@@ -62,14 +63,13 @@ class UserViewController extends Controller
 
     public function update_first(Request $request)
     {
+        $user = Auth::user();
         if ($request->hasFile('file')) {
             $validated = $request->validate([
                 'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
             ]);
             $file = $request->file('file');
             if ($validated) {
-                $user = Auth::user();
-
                 Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
 
                 $path = 'storage/' . $file->storeAs('images/' . $user->email, $file->getClientOriginalName(), 'public');
@@ -100,6 +100,13 @@ class UserViewController extends Controller
             'surname_2' => 'required|string',
             'nickname' => 'required|string',
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'whatsapp' => 'nullable|string',
             'tel' => 'required|string',
             'cost_from' => 'required|numeric|min:1|max:500000000',

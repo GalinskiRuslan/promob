@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class UpdateInfoController extends Controller
 {
@@ -18,14 +19,21 @@ class UpdateInfoController extends Controller
 
     public function update(Request $request)
     {
+        $user = User::find(Auth::id());
         $request->validate([
-            'email' => 'required|string|email|max:255|unique:users,email,',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'instagram' => 'nullable|string|regex:/^[a-zA-Z0-9\.\-\_]+$/',
             'whatsapp' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $user = User::find(Auth::id());
+
         $data = [
             'name' => $request->name,
             'surname' => $request->surname,

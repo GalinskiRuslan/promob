@@ -10,7 +10,7 @@
                             <div class="card__header">
                                 <div class="card__profile">
                                     <picture class="card__profile-avatar">
-                                      {{--   @if ($user->photos)
+                                        {{--   @if ($user->photos)
                                             <form action="{{ route('delete_avatar') }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -21,34 +21,35 @@
                                                     width="220" height="220" alt="Картинка">
                                             </picture>
                                         @else --}}
-                                            <div class="profile-avatar">
-                                                <form style="margin: 0;" class="form section dropzone dropzone-avatar"
-                                                    enctype="multipart/form-data" method="POST"
-                                                    action="{{ route('update_photo_avatar') }}">
-                                                    <div class="dz-default dz-message">
-                                                        @csrf
-                                                        <button style="width: 100%; height: 100%;" type="button"
-                                                            class="btn dz-upload dz-avatar-upload">
-                                                            <picture class="dz-avatar-picture">
-                                                                <source srcset="{{$user->photos ? asset($user->photos) : asset('./img/avatars/avatar-1.png') }}"
-                                                                    type="image/webp">
-                                                                <img loading="lazy"
-                                                                    src="{{ asset('./img/avatars/avatar-1.png') }}"
-                                                                    class="dz-avatar-img" width="220" height="220"
-                                                                    alt="Картинка">
-                                                            </picture>
-                                                            <span class="icon"><svg>
-                                                                    <use
-                                                                        xlink:href="{{ asset('img/icons/camera.svg#svg-camera') }}">
-                                                                    </use>
-                                                                </svg></span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="fallback">
-                                                        <input name="file" type="file">
-                                                    </div>
-                                                </form>
-                                            </div>
+                                        <div class="profile-avatar">
+                                            <form style="margin: 0;" class="form section dropzone dropzone-avatar"
+                                                enctype="multipart/form-data" method="POST"
+                                                action="{{ route('update_photo_avatar') }}">
+                                                <div class="dz-default dz-message">
+                                                    @csrf
+                                                    <button style="width: 100%; height: 100%;" type="button"
+                                                        class="btn dz-upload dz-avatar-upload">
+                                                        <picture class="dz-avatar-picture">
+                                                            <source
+                                                                srcset="{{ $user->photos ? asset($user->photos) : asset('./img/avatars/avatar-1.png') }}"
+                                                                type="image/webp">
+                                                            <img loading="lazy"
+                                                                src="{{ asset('./img/avatars/avatar-1.png') }}"
+                                                                class="dz-avatar-img" width="220" height="220"
+                                                                alt="Картинка">
+                                                        </picture>
+                                                        <span class="icon"><svg>
+                                                                <use
+                                                                    xlink:href="{{ asset('img/icons/camera.svg#svg-camera') }}">
+                                                                </use>
+                                                            </svg></span>
+                                                    </button>
+                                                </div>
+                                                <div class="fallback">
+                                                    <input name="file" type="file">
+                                                </div>
+                                            </form>
+                                        </div>
                                         {{-- @endif --}}
                                     </picture>
                                     <div class="card__profile-info">
@@ -139,8 +140,8 @@
                                                 @method('DELETE')
                                                 <input type="hidden" name="fileName" value="{{ $galleryItem }}">
                                                 <button type="submit" class="dz-portfolio-delete" title="Удалить">
-                                                    <svg width="26" height="24" viewBox="0 0 26 24"
-                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <svg width="26" height="24" viewBox="0 0 26 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M19.6458 6L6.94922 18" stroke="white" stroke-width="2"
                                                             stroke-linecap="round" stroke-linejoin="round" />
                                                         <path d="M6.94922 6L19.6458 18" stroke="white" stroke-width="2"
@@ -256,6 +257,7 @@
                     </div>
                 </section>
                 <form style="width: auto;" class="form section" method="POST" action="{{ route('update_first') }}">
+                    <input type="hidden" name="email" value="{{ $user->email }}">
                     @csrf
                     @if ($errors)
                         @foreach ($errors->all() as $error)
