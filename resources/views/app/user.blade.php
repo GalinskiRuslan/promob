@@ -99,7 +99,7 @@
                                         <picture class="portfolio__item-picture">
                                             <source srcset="{{ asset($galleryItem) }}" type="image/webp">
                                             <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                class="portfolio__item-image" width="350" height="224" alt="Картинка">
+                                                class="portfolio__item-image" width="224" height="224" alt="Картинка">
                                         </picture>
                                         <button type="button" class="btn">
                                             <span class="icon">
@@ -113,7 +113,7 @@
 
                                 @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                                     <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
-                                        <video class="portfolio__item-video" width="350" height="224"
+                                        <video class="portfolio__item-video" width="224" height="224"
                                             src="{{ asset($galleryItem) }}#t=0.001" preload="metadata"></video>
                                         <button type="button" class="btn">
                                             <span class="icon">
@@ -139,7 +139,7 @@
                                                         <picture class="portfolio__item-picture">
                                                             <source srcset="{{ asset($galleryItem) }}" type="image/webp">
                                                             <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                                class="portfolio__item-image" width="350" height="224"
+                                                                class="portfolio__item-image" width="224" height="224"
                                                                 alt="Картинка">
                                                         </picture>
                                                         <button type="button" class="btn">
@@ -157,7 +157,7 @@
                                                     <div class="portfolio__slide">
                                                         <div class="portfolio__item"
                                                             data-graph-path="portfolio-item{{ $key }}">
-                                                            <video class="portfolio__item-video" width="350"
+                                                            <video class="portfolio__item-video" width="224"
                                                                 height="224" src="{{ asset($galleryItem) }}#t=0.001"
                                                                 preload="metadata"></video>
                                                             <button type="button" class="btn">

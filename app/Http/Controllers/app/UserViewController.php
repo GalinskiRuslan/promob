@@ -172,13 +172,13 @@ class UserViewController extends Controller
 
     public function save_new_avatar(Request $request)
     {
-
         $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic|max:100000',
+            'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic',
         ]);
         $file = $request->file('file');
         $user = Auth::user();
         if ($user->photos) {
+
             $clearPath = str_replace("https://promob.s3.amazonaws.com/", "", $user->photos);
             Storage::disk('s3')->delete($clearPath);
         }

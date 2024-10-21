@@ -140,6 +140,7 @@ html {
 }
 img {
     height: auto;
+    max-height: 100%;
     max-width: 100%;
     -o-object-fit: cover;
     object-fit: cover;
@@ -2034,14 +2035,15 @@ ul {
     width: auto;
 }
 .card__swiper .swiper-slide-picture {
-    width: 21.75rem;
-    height: 14rem;
+    width: 14rem;
+    /* height: 14rem; */
     display: block;
 }
 .card__swiper .swiper-slide-picture .image {
     display: block;
-    width: 100%;
-    height: 100%;
+    max-height: 224px;
+    /*  width: 100%;
+    height: 100%; */
     border-radius: var(--radius-lg);
 }
 .card__swiper .swiper-scrollbar {
@@ -4398,8 +4400,8 @@ ul {
         --_font-size: var(--fs-lg);
     }
     .card__swiper .swiper-slide-picture {
-        width: 17.5rem;
-        height: 11.25rem;
+        width: 11.25rem;
+        /* height: 11.25rem; */
     }
     .card--edit .card__profile-avatar,
     .card--header .card__profile-avatar {
@@ -5418,6 +5420,6 @@ ul {
     .card__swiper .swiper-slide,
     .card__swiper .swiper-slide-picture,
     .portfolio-swiper .swiper-slide {
-        width: 100%;
+        /*    width: 100%; */
     }
 }
