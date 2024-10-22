@@ -574,9 +574,6 @@
                                 данных.</a></p>
                     </form>
                     <div class="graph-modal__switch">
-                        <button type="button" class="btn text-underline graph-modal__switch_email"
-                            data-graph-path="modal-signup-executor">Регистрация по почте
-                        </button>
                         У вас уже есть аккаунт?
                         <button type="button" class="btn btn-inherit text-underline" data-graph-path="modal-signin">
                             Войдите
@@ -669,35 +666,7 @@
                             </button>
                         </li>
                     </ul>
-                    <form class="graph-modal__form" method="POST" action="{{ route('register_my') }}">
-                        @csrf
-                        <input type="hidden" name="role" value="client">
-                        <div class="form-control">
-                            <h2 class="form-control__title">E-mail</h2>
-                            <div class="form-field"><input type="email" name="email" class="field"
-                                    placeholder="Введите ваш e-mail" required>
-                            </div>
-                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации
-                            </p>
-                        </div>
-                        <div class="graph-modal__form-btns">
-                            <button type="submit"
-                                class="btn btn-lg btn-primary btn-primary--theme graph-modal__form-submit">Продолжить
-                            </button>
-                        </div>
-                        <p class="form-hint">Нажимая «Зарегистрироваться», я даю свое согласие на обработку <a
-                                href="#" class="btn btn-inherit text-underline">персональных
-                                данных.</a></p>
-                    </form>
-                    <div class="graph-modal__switch">
-                        <button type="button" class="btn text-underline graph-modal__switch_email"
-                            data-graph-path="modal-signup-client-sms">Регистрация по номеру телефона
-                        </button>
-                        У вас уже есть аккаунт?
-                        <button type="button" class="btn btn-inherit text-underline" data-graph-path="modal-signin">
-                            Войдите
-                        </button>
-                    </div>
+
                 </div>
             </div>
             <div class="graph-modal__container graph-modal__container--sign" role="dialog" aria-modal="true"
@@ -720,15 +689,15 @@
                             </button>
                         </li>
                     </ul>
-                    <form class="graph-modal__form" method="POST" action="{{ route('register-sms') }}">
+                    <form class="graph-modal__form" method="POST" action="{{ route('register_my') }}">
                         @csrf
                         <input type="hidden" name="role" value="client">
                         <div class="form-control">
-                            <h2 class="form-control__title">Номер</h2>
-                            <div class="form-field"><input type="tel" name="tel" class="field"
-                                    data-tel-input placeholder="+7" required>
+                            <h2 class="form-control__title">E-mail</h2>
+                            <div class="form-field"><input type="email" name="email" class="field"
+                                    placeholder="Введите ваш e-mail" required>
                             </div>
-                            <p class="form-hint">На этот номер вы получите SMS с кодом подтверждения авторизации
+                            <p class="form-hint">На эту почту вы получите письмо с кодом подтверждения авторизации
                             </p>
                         </div>
                         <div class="graph-modal__form-btns">
@@ -740,11 +709,7 @@
                                 href="#" class="btn btn-inherit text-underline">персональных
                                 данных.</a></p>
                     </form>
-
                     <div class="graph-modal__switch">
-                        <button type="button" class="btn text-underline graph-modal__switch_email"
-                            data-graph-path="modal-signup-client">Регистрация по почте
-                        </button>
                         У вас уже есть аккаунт?
                         <button type="button" class="btn btn-inherit text-underline" data-graph-path="modal-signin">
                             Войдите
