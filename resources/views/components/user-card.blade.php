@@ -72,7 +72,7 @@
                         @endif
                         @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
                             <div class="user-card__portfolio">
-                                <video class="portfolio__item-video" width="350" height="224" preload="none"
+                                <video class="portfolio__item-video" width="350" height="224" preload="metadata"
                                     onclick="openModal('{{ asset($galleryItem) }}', 'video')"
                                     src="{{ asset($galleryItem) }}#t=0.001">
                                     <source src="{{ asset($galleryItem) }}">
