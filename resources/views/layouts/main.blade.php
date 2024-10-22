@@ -164,6 +164,7 @@
         <header class="header">
             <div class="container header__container">
                 <div class="header__start">
+
                     <a href="/" class="btn logo header__logo">
                         <svg width="95" height="48" viewBox="0 0 95 48" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -434,11 +435,11 @@
                             $categories = \App\Models\Category::all();
                         @endphp
                         @foreach ($categories as $category)
-                            {{--  <li>
-                                <a href="{{ route('city_category', ['city' => $corrent_city->alias, 'category' => $category->alias]) }}"
+                            <li>
+                                <a href="{{ route('category', ['category' => $category->alias]) }}"
                                     class="btn menu__job-link"
-                                    data-current="{{ App\Models\User::withCategoriesAndCity([$category->id], $corrent_city->id)->get()->count() }}">{{ $category->category }}</a>
-                            </li> --}}
+                                    data-current="{{ App\Models\User::whereJsonContains('categories_id', (string) $category->id)->get()->count() }}">{{ $category->category }}</a>
+                            </li>
                         @endforeach
                     </ul>
                     @auth()
@@ -888,7 +889,9 @@
                         </svg></span>
                 </button>
                 <div class="graph-modal__content">
-                    <form class="graph-modal__form">
+                    <form class="graph-modal__form" action="{{ route('reset_password_confirmation') }}"
+                        method="POST">
+                        @csrf
                         <h3 class="graph-modal__form-title">Восстановление пароля</h3>
                         <div class="form-control">
                             <h3 class="form-control__title">Email</h3>
@@ -915,23 +918,9 @@
                         </svg></span>
                 </button>
                 <div class="graph-modal__content">
-                    <form class="graph-modal__form" action="{{ route('reset_password') }}" method="POST">
-                        <h3 class="graph-modal__form-title">Восстановление пароля</h3>
-                        <div class="form-control">
-                            <h3 class="form-control__title">Код подтверждения</h3>
-                            <div class="form-field">
-                                <input type="text" name="confirmationCode" class="field"
-                                    placeholder="Введите код подтверждения" required>
-                            </div>
-                        </div>
-                        <input name="email" type="hidden" value="">
-                        <div class="graph-modal__form-btns graph-modal__form-btns--v2">
-                            <button type="submit"
-                                class="btn btn-lg btn-primary btn-primary--theme graph-modal__form-submit">Восстановить
-                            </button>
-                        </div>
-                        <div style="margin-top: 15px; text-align: center; font-weight: 600;" class="alert"></div>
-                    </form>
+                    @if ($errors->any())
+                        <p>Мы отправили новый пароль Вам на почту, пожалуйста проверьте свой почтовый ящик</p>
+                    @endif
                 </div>
             </div>
             <div class="graph-modal__container graph-modal__container--code {{ $active_modal ?? null }}"
@@ -1005,19 +994,7 @@
                     }
                 </script>
                 <style>
-                    .graph-modal__repeat form.hidden {
-                        display: none;
-                    }
 
-                    .repeat-code-timer {
-                        margin-bottom: 15px;
-                        display: none;
-                        text-align: center;
-                    }
-
-                    .repeat-code-timer.active {
-                        display: block;
-                    }
                 </style>
             </div>
             @yield('modal_contact')
@@ -1504,13 +1481,26 @@
             }
 
             .swiper-wrapper .swiper-slide {
-                max-width: 350px;
+                max-width: 225px;
             }
 
             .card__swiper .swiper-slide {
                 width: 100%;
             }
 
+            .graph-modal__repeat form.hidden {
+                display: none;
+            }
+
+            .repeat-code-timer {
+                margin-bottom: 15px;
+                display: none;
+                text-align: center;
+            }
+
+            .repeat-code-timer.active {
+                display: block;
+            }
 
             @media (max-width: 92.5625rem) {
                 .swiper-slide .portfolio__item-video {

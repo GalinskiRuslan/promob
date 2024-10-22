@@ -62,6 +62,7 @@ class LoginController extends Controller
 
     public function resetPasswordConfirmation(Request $request)
     {
+        return back()->withErrors(['email' => 'Неверные данные для входа.']);
         $request->validate([
             'email' => ['required', 'email', 'exists:users'],
         ]);
@@ -69,6 +70,7 @@ class LoginController extends Controller
         $user = User::query()->where('email', $request->email)->first();
 
         $confirmationCode = Hash::make(Str::random(5));
+
 
         if (Mail::to($user->email)->send(new ResetPasswordConfirmationMail($confirmationCode))) {
             session()->put('reset-password-confirmation-code', $confirmationCode);

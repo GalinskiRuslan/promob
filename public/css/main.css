@@ -5330,9 +5330,11 @@ ul {
     .graph-modal__text {
         font-size: var(--fs-xl);
     }
-    .header__end .choices--language,
-    .header__location {
+    .header__end .choices--language {
         display: none;
+    }
+    .header__location {
+        font-size: 14px;
     }
     .info {
         padding: 2rem 1.5rem;
