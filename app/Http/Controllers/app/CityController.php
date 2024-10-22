@@ -16,7 +16,7 @@ class CityController extends Controller
         if ($corrent_city) {
             $users = $corrent_city->users()->paginate(20);
         } else {
-            $users = User::all();
+            $users = User::where('role', 'executor')->paginate(20);
             $corrent_city = City::get()->first();
         }
 
