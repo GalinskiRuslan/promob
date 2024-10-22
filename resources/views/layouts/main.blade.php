@@ -164,7 +164,6 @@
         <header class="header">
             <div class="container header__container">
                 <div class="header__start">
-
                     <a href="/" class="btn logo header__logo">
                         <svg width="95" height="48" viewBox="0 0 95 48" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

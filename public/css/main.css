@@ -5334,7 +5334,11 @@ ul {
         display: none;
     }
     .header__location {
-        font-size: 14px;
+        font-size: 12px;
+    }
+    .header__start {
+        display: flex;
+        flex-direction: column !important;
     }
     .info {
         padding: 2rem 1.5rem;
@@ -5423,5 +5427,10 @@ ul {
     .card__swiper .swiper-slide-picture,
     .portfolio-swiper .swiper-slide {
         /*    width: 100%; */
+    }
+}
+@media screen and(max-width: 600px) {
+    .header__start {
+        flex-direction: column;
     }
 }
