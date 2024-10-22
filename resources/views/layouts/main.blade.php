@@ -446,7 +446,7 @@
                         <button type="button" class="btn menu__location" data-graph-path="modal-location"><span
                                 class="icon"><svg>
                                     <use xlink:href="{{ asset('img/icons/location.svg#svg-location') }}"></use>
-                                </svg> </span>{{ $corrent_city->city ?? null }}
+                                </svg> </span>{{ $corrent_city->city ?? 'Выберите город' }}
                         </button>
                     @endauth
                     @guest()
@@ -465,7 +465,7 @@
                         <button type="button" class="btn menu__location" data-graph-path="modal-location"><span
                                 class="icon"><svg>
                                     <use xlink:href="{{ asset('img/icons/location.svg#svg-location') }}"></use>
-                                </svg> </span>{{ $corrent_city->city ?? null }}
+                                </svg> </span>{{ $corrent_city->city ?? 'Выберите город' }}
                         </button>
                     @endguest
                 </div>
