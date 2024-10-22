@@ -209,6 +209,10 @@
 
     function closeModal() {
         var modal = document.getElementById("modal");
-        modal.style.display = "none"; // Скрываем модальное окно
+        var modalImg = document.getElementById("modalImage");
+        var modalVideo = document.getElementById("modalVideo");
+        modalImg.style.display = "none";
+        modalVideo.src = "";
+        modal.style.display = "none";
     }
 </script>

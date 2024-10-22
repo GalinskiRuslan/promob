@@ -179,13 +179,13 @@ class UserViewController extends Controller
         $user = Auth::user();
         if ($user->photos) {
 
-            $clearPath = str_replace("https://promob.s3.amazonaws.com/", "", $user->photos);
+            $clearPath = str_replace("https://dspt7sohnkg6q.cloudfront.net/", "", $user->photos);
             Storage::disk('s3')->delete($clearPath);
         }
         if ($user->email) {
-            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
+            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
         } else {
-            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
+            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
         }
         $user->photos = $path;
         $user->save();
@@ -195,7 +195,7 @@ class UserViewController extends Controller
     public function deleteAvatar()
     {
         $user = Auth::user();
-        $clearPath = str_replace("https://promob.s3.amazonaws.com/", "", $user->photos);
+        $clearPath = str_replace("https://dspt7sohnkg6q.cloudfront.net/", "", $user->photos);
         Storage::disk('s3')->delete($clearPath);
         $user->photos = null;
         $user->save();

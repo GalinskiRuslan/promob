@@ -140,7 +140,7 @@ class PortofolioController extends Controller
     {
         $user = Auth::user();
         if ($request->hasFile('file')) {
-            $path = "https://promob.s3.amazonaws.com/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
+            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
             $userGallery = $user->gallery ? json_decode($user->gallery, true) : []; // Распарсим текущую галерею
             $userGallery[] = $path; // Добавим новый путь в массив галереи
             $user->gallery = json_encode($userGallery); // Закодируем массив обратно в JSON
@@ -153,7 +153,7 @@ class PortofolioController extends Controller
     {
         $user = Auth::user();
         $userGallery = json_decode($user->gallery, true);
-        $cleanPath = str_replace("https://promob.s3.amazonaws.com/", "", $request->fileName);
+        $cleanPath = str_replace(["https://promob.s3.amazonaws.com/", "https://dspt7sohnkg6q.cloudfront.net/"], "", $request->fileName);
         if (in_array($request->fileName, $userGallery)) {
             $result = array_diff($userGallery, [$request->fileName]);
             if (Storage::disk('s3')->exists($cleanPath)) {
