@@ -432,13 +432,14 @@
                     </ul>
                     <ul class="list-reset menu__job">
                         @php
-                            $categories = \App\Models\Category::all();
+                            $categories = \App\Models\Category::all()->reverse();
                         @endphp
                         @foreach ($categories as $category)
                             <li>
                                 <a href="{{ route('category', ['category' => $category->alias]) }}"
                                     class="btn menu__job-link"
-                                    data-current="{{ App\Models\User::whereJsonContains('categories_id', (string) $category->id)->get()->count() }}">{{ $category->category }}</a>
+                                    data-current="{{ isset($corrent_city)? App\Models\User::withCategoriesAndCity([$category->id], $corrent_city->id)->get()->count(): App\Models\User::whereJsonContains('categories_id', (string) $category->id)->get()->count() }}">
+                                    {{ $category->category }}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -918,9 +919,7 @@
                         </svg></span>
                 </button>
                 <div class="graph-modal__content">
-                    @if ($errors->any())
-                        <p>Мы отправили новый пароль Вам на почту, пожалуйста проверьте свой почтовый ящик</p>
-                    @endif
+                    <p>Мы отправили новый пароль Вам на почту, пожалуйста проверьте свой почтовый ящик</p>
                 </div>
             </div>
             <div class="graph-modal__container graph-modal__container--code {{ $active_modal ?? null }}"
