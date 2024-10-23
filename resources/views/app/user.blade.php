@@ -94,7 +94,7 @@
                     @if ($user->gallery)
                         <ul class="list-reset portfolio">
                             @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                @if (preg_match('/(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+                                @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
                                     <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
                                         <picture class="portfolio__item-picture">
                                             <source srcset="{{ asset($galleryItem) }}" type="image/webp">
@@ -111,7 +111,7 @@
                                     </li>
                                 @endif
 
-                                @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
+                                @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
                                     <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
                                         <video class="portfolio__item-video" width="224" height="224"
                                             src="{{ asset($galleryItem) }}#t=0.001" preload="metadata"></video>

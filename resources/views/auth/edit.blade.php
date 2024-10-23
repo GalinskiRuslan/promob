@@ -10,17 +10,6 @@
                             <div class="card__header">
                                 <div class="card__profile">
                                     <picture class="card__profile-avatar">
-                                        {{--   @if ($user->photos)
-                                            <form action="{{ route('delete_avatar') }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                            <picture class="dz-avatar-picture">
-                                                <source srcset="{{ asset($user->photos) }}" type="image/webp">
-                                                <img loading="lazy" src="{{ asset($user->photos) }}" class="dz-avatar-img"
-                                                    width="220" height="220" alt="Картинка">
-                                            </picture>
-                                        @else --}}
                                         <div class="profile-avatar">
                                             <form style="margin: 0;" class="form section dropzone dropzone-avatar"
                                                 enctype="multipart/form-data" method="POST"
@@ -101,7 +90,7 @@
                         <ul class="list-reset portfolio portfolio--edit">
                             @if ($user->gallery)
                                 @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                    @if (preg_match('/(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+                                    @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
                                         <li class="portfolio__item">
                                             <form action="{{ route('portfolio_delete') }}" method="POST">
                                                 @csrf
@@ -133,7 +122,7 @@
                                             </button>
                                         </li>
                                     @endif
-                                    @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
+                                    @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
                                         <li class="portfolio__item">
                                             <form action="{{ route('portfolio_delete') }}" method="POST">
                                                 @csrf

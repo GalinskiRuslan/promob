@@ -60,7 +60,7 @@
             <div class="user-item__container-image">
                 @if ($user->gallery)
                     @foreach (json_decode($user->gallery, true) as $galleryItem)
-                        @if (preg_match('/(jpg|jpeg|png|gif|svg)$/i', $galleryItem))
+                        @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
                             <div class="user-card__portfolio">
                                 <picture class="swiper-slide-picture">
                                     <source srcset="{{ asset($galleryItem) }}" type="image/webp">
@@ -70,7 +70,7 @@
                                 </picture>
                             </div>
                         @endif
-                        @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
+                        @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
                             <div class="user-card__portfolio">
                                 <video class="portfolio__item-video" width="350" height="224" preload="metadata"
                                     onclick="openModal('{{ asset($galleryItem) }}', 'video')"
