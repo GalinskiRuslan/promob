@@ -620,7 +620,7 @@
                                 </svg>
                             </span>
                         </button>
-                        @if (preg_match('/\.?(jpeg|png|jpg|gif|svg)$/i', $image))
+                        @if (preg_match('/\.?(jpeg|png|jpg|gif|svg|webp)$/i', $image))
                             <picture class="portfolio__item-picture">
                                 <source srcset="{{ \Illuminate\Support\Str::replace('_350x225', '', asset($image)) }}"
                                     type="image/webp">
@@ -630,7 +630,7 @@
                             </picture>
                         @endif
 
-                        @if (preg_match('/\.?(mp4|mov|avi)$/i', $image))
+                        @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $image))
                             <div class="video-wrapper">
                                 <video class="portfolio__item-video" width="350" height="224"
                                     src="{{ asset($image) }}#t=0.001" preload="metadata"></video>

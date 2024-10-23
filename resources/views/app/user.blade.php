@@ -152,7 +152,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem))
+                                            @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
                                                 <div class="swiper-slide">
                                                     <div class="portfolio__slide">
                                                         <div class="portfolio__item"
