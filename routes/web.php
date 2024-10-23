@@ -56,7 +56,6 @@ Route::prefix('registration')->group(function () {
         Route::post('/portfolio-edit-test', [PortofolioController::class, 'savePortfolioItem'])->name('portfolio_gallery');
         Route::delete('/portfolio-remove', [PortofolioController::class, 'deletePortfolioItem'])->name('portfolio_delete');
     });
-    Route::post('/portfolio-edit', [PortofolioController::class, 'store']);
     Route::get('/register', [RegisterController::class, 'register_view'])->name('register_my');
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/register-sms', [RegisterController::class, 'register_sms'])->name('register-sms');

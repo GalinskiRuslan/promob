@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Google\Cloud\Storage\StorageClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Maestroerror\HeicToJpg;
+use WebPConvert\WebPConvert;
+use FFMpeg;
 
 class PortofolioController extends Controller
 {
@@ -23,131 +21,77 @@ class PortofolioController extends Controller
         ];
         return view('auth.portfolio', $params);
     }
-
-    public function store(Request $request)
-    {
-        try {
-            if ($request->hasFile('file')) {
-                $validated = $request->validate([
-                    'file' => 'required|mimes:jpg,jpeg,png,jpg,gif,svg,heic|max:10000',
-                ]);
-
-                $file = $request->file('file');
-
-                if ($validated) {
-                    $user = Auth::user();
-
-                    Log::info('Текущий пользователь', ['user_id' => $user->id, 'email' => $user->email]);
-
-                    $path = 'storage/' . $file->storeAs('images/' . $user->email, $file->getClientOriginalName(), 'public');
-
-                    if (Str::lower($file->getClientOriginalExtension()) === 'heic') {
-                        $extension = 'jpg';
-
-                        HeicToJpg::convert($path)->saveAs(preg_replace('/\.heic$/i', ".$extension", $path));
-
-                        File::delete(public_path($path));
-
-                        $path = Str::replace($file->getClientOriginalExtension(), $extension, $path);
-                    }
-
-                    $user->photos = $path;
-
-                    $user->save();
-
-                    if ($user->city && $user->city->alias) {
-                        return redirect()->to('/' . $user->city->alias);
-                    } else {
-                        return response()->json(['error' => 'Город пользователя не найден или у города нет алиаса.'], 400);
-                    }
-                } else {
-                    Log::error('Файл не прошел валидацию.', ['request' => $request->all()]);
-                    return response()->json(['error' => 'Файл не прошел валидацию.'], 400);
-                }
-            } else {
-                Log::error('Файл не был загружен.', ['request' => $request->all()]);
-                return response()->json(['error' => 'Файл не был загружен.'], 400);
-            }
-        } catch (\Exception $e) {
-            Log::error('Ошибка при загрузке файла.', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Ошибка загрузки файла.'], 500);
-        }
-    }
-    public function store_gallery(Request $request)
-    {
-
-        try {
-            if ($request->hasFile('file')) {
-                $validated = $request->validate([
-                    'file' => 'required|mimes:jpeg,png,jpg,svg,mp4,mov,avi,heic|max:102400'
-                ]);
-
-                $file = $request->file('file');
-
-                $fileSize = $file->getSize();
-
-                $galleryVideoCount = 0;
-
-                $user = Auth::user();
-
-                $userGallery = $user->gallery ? json_decode($user->gallery, true) : [];
-
-                $mimeType = $file->getMimeType();
-
-                if (Str::contains($mimeType, 'image') && $fileSize > 1000 * 1024 * 1024) return false;
-
-                if (Str::contains($mimeType, 'video')) {
-                    if ($fileSize > 102400 * 1024 * 1024) return false;
-
-                    if ($userGallery) {
-                        foreach ($userGallery as $galleryItem) {
-                            if ($galleryVideoCount == 1) return false;
-
-                            if (preg_match('/\.?(mp4|mov|avi)$/i', $galleryItem)) {
-                                $galleryVideoCount++;
-                            }
-                        }
-                    }
-                }
-                if ($validated) {
-                    $path = 'storage/' . $file->storeAs('images/' . $user->email, $file->getClientOriginalName(), 'public');
-                    $userGallery[] = $path;
-
-                    $user->gallery = json_encode($userGallery);
-
-                    $user->save();
-                    if ($user->city && $user->city->alias) {
-                        return redirect()->to('/' . $user->city->alias);
-                    } else {
-                        Log::error('Город пользователя не найден или у города нет алиаса.', ['user' => $user]);
-                        return response()->json(['error' => 'Город пользователя не найден или у города нет алиаса.'], 400);
-                    }
-                } else {
-                    Log::error('Файл не прошел валидацию.', ['request' => $request->all()]);
-                    return response()->json(['error' => 'Файл не прошел валидацию.'], 400);
-                }
-            } else {
-                Log::error('Файл не был загружен.', ['request' => $request->all()]);
-                return response()->json(['error' => 'Файл не был загружен.'], 400);
-            }
-        } catch (\Exception $e) {
-            // Логируем любые возникшие исключения
-            Log::error('Ошибка при загрузке файла.', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Ошибка загрузки файла.'], 500);
-        }
-    }
     public function savePortfolioItem(Request $request)
     {
         $user = Auth::user();
         if ($request->hasFile('file')) {
-            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
-            $userGallery = $user->gallery ? json_decode($user->gallery, true) : []; // Распарсим текущую галерею
-            $userGallery[] = $path; // Добавим новый путь в массив галереи
-            $user->gallery = json_encode($userGallery); // Закодируем массив обратно в JSON
-            $user->save(); // Сохраним пользователя
+            if (Str::contains($request->file('file')->getMimeType(), 'image')) {
+                // Локальное временное хранение файла для конвертации
+                $tempPath = $request->file('file')->getPathname();
+                $outputWebPPath = $tempPath . '.webp';
+
+                // Конвертируем изображение в WebP
+                WebPConvert::convert($tempPath, $outputWebPPath, [
+                    'quality' => 85, // Устанавливаем качество WebP
+                ]);
+
+                // Сохраняем WebP версию в S3
+                $webpPath = $user->email . '/portfolio/' . pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+                Storage::disk('s3')->put($webpPath, file_get_contents($outputWebPPath));
+
+                // Получаем URL WebP изображения
+                $webpUrl = "https://dspt7sohnkg6q.cloudfront.net/" . $webpPath;
+
+                // Обновляем галерею пользователя, добавляя только WebP-версию
+                $userGallery = $user->gallery ? json_decode($user->gallery, true) : [];
+                $userGallery[] = $webpUrl;
+
+                // Сохраняем изменения
+                $user->gallery = json_encode($userGallery);
+                $user->save();
+                // Удаляем временный WebP файл
+                unlink($outputWebPPath);
+            } else if (Str::contains($request->file('file')->getMimeType(), 'video')) {
+                $video = $request->file('file');
+                $tempPath = $video->getPathname();
+
+                // Создаем имя файла для сжатого видео
+                $compressedVideoPath = $tempPath . '_compressed.mp4';
+
+                // Используем FFMpeg для сжатия видео
+                FFMpeg::fromDisk('local')  // Используем временное локальное хранилище
+                    ->open($video->getClientOriginalName())
+                    ->export()
+                    ->toDisk('local')  // Можно сохранить в локальном хранилище для дальнейшей загрузки
+                    ->inFormat(new \FFMpeg\Format\Video\X264('aac'))
+                    ->resize(1280, 720)  // Изменяем разрешение видео
+                    ->save($compressedVideoPath);
+
+                // Загружаем сжатое видео в S3
+                $s3Path = $user->email . '/portfolio/' . pathinfo($video->getClientOriginalName(), PATHINFO_FILENAME) . '_compressed.mp4';
+                Storage::disk('s3')->put($s3Path, file_get_contents($compressedVideoPath));
+
+                // Получаем URL загруженного видео
+                $videoUrl = Storage::disk('s3')->url($s3Path);
+
+                // Обновляем галерею пользователя
+                $userGallery = $user->gallery ? json_decode($user->gallery, true) : [];
+                $userGallery[] = $videoUrl;
+
+                // Сохраняем изменения
+                $user->gallery = json_encode($userGallery);
+                $user->save();
+
+                // Удаляем временный файл
+                unlink($compressedVideoPath);
+            } else {
+                return back()->withErrors(['file' => 'Файл должен быть изображением или видео.']);
+            }
         }
+
         return back();
     }
+
 
     public function deletePortfolioItem(Request $request)
     {
