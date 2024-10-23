@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maestroerror\HeicToJpg;
+use WebPConvert\WebPConvert;
 
 class UserViewController extends Controller
 {
@@ -173,22 +174,45 @@ class UserViewController extends Controller
     public function save_new_avatar(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic',
+            'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic,webp',
         ]);
-        $file = $request->file('file');
         $user = Auth::user();
-        if ($user->photos) {
 
-            $clearPath = str_replace("https://dspt7sohnkg6q.cloudfront.net/", "", $user->photos);
-            Storage::disk('s3')->delete($clearPath);
-        }
-        if ($user->email) {
-            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
+        if (Str::contains($request->file('file')->getMimeType(), 'webp')) {
+            $file = $request->file('file');
+            if ($user->email) {
+                $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
+            } else {
+                $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
+            }
+            if ($user->photos) {
+
+                $clearPath = str_replace(["https://dspt7sohnkg6q.cloudfront.net/", "https://promob.s3.amazonaws.com/"], "", $user->photos);
+                Storage::disk('s3')->delete($clearPath);
+            }
+            $user->photos = $path;
+            $user->save();
         } else {
-            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
+            $tempPath = $request->file('file')->getPathname();
+            $outputWebPPath = $tempPath . '.webp';
+            // Конвертируем изображение в WebP
+            WebPConvert::convert($tempPath, $outputWebPPath, [
+                'quality' => 85, // Устанавливаем качество WebP
+            ]);
+
+            if ($user->email) {
+                $webpPath = $user->email . '/portfolio/' . pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+            } else {
+                $webpPath = $user->phone . '/portfolio/' . pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+            }
+            if ($user->photos) {
+                $clearPath = str_replace(["https://dspt7sohnkg6q.cloudfront.net/", "https://promob.s3.amazonaws.com/"], "", $user->photos);
+                Storage::disk('s3')->delete($clearPath);
+            }
+            $webpUrl = "https://dspt7sohnkg6q.cloudfront.net/" . $webpPath;
+            $user->photos = $webpUrl;
+            $user->save();
         }
-        $user->photos = $path;
-        $user->save();
         return redirect()->back();
     }
 
