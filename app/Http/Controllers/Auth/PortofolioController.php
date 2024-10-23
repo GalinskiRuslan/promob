@@ -52,7 +52,12 @@ class PortofolioController extends Controller
                 // Удаляем временный WebP файл
                 unlink($outputWebPPath);
             } else if (Str::contains($request->file('file')->getMimeType(), 'video')) {
-                $video = $request->file('file');
+                $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
+                $userGallery = $user->gallery ? json_decode($user->gallery, true) : []; // Распарсим текущую галерею
+                $userGallery[] = $path; // Добавим новый путь в массив галереи
+                $user->gallery = json_encode($userGallery); // Закодируем массив обратно в JSON
+                $user->save(); //
+                /* $video = $request->file('file');
                 $tempPath = $video->getPathname();
 
                 // Создаем имя файла для сжатого видео
@@ -83,7 +88,7 @@ class PortofolioController extends Controller
                 $user->save();
 
                 // Удаляем временный файл
-                unlink($compressedVideoPath);
+                unlink($compressedVideoPath); */
             } else {
                 return back()->withErrors(['file' => 'Файл должен быть изображением или видео.']);
             }
