@@ -53,6 +53,7 @@ Route::prefix('registration')->group(function () {
         Route::post('/about-executor', [UpdateInfoExecutorController::class, 'update']);
 
         Route::get('/portfolio-edit', [PortofolioController::class, 'index'])->name('portfolio');
+        Route::post('/portfolio-edit', [UserViewController::class, 'save_new_avatar']);
         Route::post('/portfolio-edit-test', [PortofolioController::class, 'savePortfolioItem'])->name('portfolio_gallery');
         Route::delete('/portfolio-remove', [PortofolioController::class, 'deletePortfolioItem'])->name('portfolio_delete');
     });
