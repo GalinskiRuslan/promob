@@ -502,7 +502,7 @@
                     </ul>
                     <form class="graph-modal__form" method="POST" action="{{ route('register_my') }}">
                         @csrf
-                        <input type="hidden" name="role" value="executor">
+                        <input type="hidden" name="role" value="client">
                         <div class="form-control">
                             <h2 class="form-control__title">E-mail</h2>
                             <div class="form-field"><input type="email" name="email" class="field"
