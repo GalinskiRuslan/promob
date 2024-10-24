@@ -134,7 +134,7 @@
                                 <div class="swiper-wrapper">
                                     @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
                                         @php
-                                            $cleanedUrl = explode('?', $galleryItem)[0];
+                                            $cleanedUrl = explode('?', $galleryItem)[1];
                                             $isVideo = Str::contains($cleanedUrl, [
                                                 '.mp4',
                                                 '.mov',
