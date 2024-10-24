@@ -58,7 +58,6 @@ class PortofolioController extends Controller
     {
         $user = Auth::user();
         $userGallery = json_decode($user->gallery, true);
-        dd(Str::contains($request->fileName, ["https://promob.s3.amazonaws.com/", "https://dspt7sohnkg6q.cloudfront.net/"]), $request->fileName);
         if (Str::contains($request->fileName, ["https://promob.s3.amazonaws.com/", "https://dspt7sohnkg6q.cloudfront.net/"])) {
             $cleanPath = str_replace(["https://promob.s3.amazonaws.com/", "https://dspt7sohnkg6q.cloudfront.net/"], "", $request->fileName);
             if (in_array($request->fileName, $userGallery)) {
