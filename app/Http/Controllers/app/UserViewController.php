@@ -188,7 +188,11 @@ class UserViewController extends Controller
 
         // Получаем URL изображения
         $uploadedFileUrl = $uploadedFile->getSecurePath();
-        $user->photos = $uploadedFileUrl;
+        $publicId = $uploadedFile->getPublicId(); // Публичный ID файла
+
+        // Сохраняем URL и public_id в массив
+        $imageData = [$uploadedFileUrl, $publicId];
+        $user->photos = $imageData;
         $user->save();
         return redirect()->back();
     }
