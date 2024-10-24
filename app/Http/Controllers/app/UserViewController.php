@@ -182,12 +182,13 @@ class UserViewController extends Controller
 
         $user = Auth::user();
         parse_str(parse_url($user->photos)['query'], $queryParams);
-        dd($queryParams['public_id']);
         $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
             'folder' => $user->email . 'portfolio',
             'format' => 'webp',
             'quality' => 'auto',
         ]);
+        //удаляем старый аватар
+        Cloudinary::destroy($queryParams['public_id']);
 
         // Получаем URL изображения
         $uploadedFileUrl = $uploadedFile->getSecurePath();
