@@ -94,27 +94,27 @@
                     @if ($user->gallery)
                         <ul class="list-reset portfolio">
                             @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                @php
-                                    $isImage = preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem);
-                                    $isVideo = preg_match('/\.(mp4|mov|avi|mkv)$/i', $galleryItem);
-                                    $galleryItemEncoded = str_replace('@', '%40', $galleryItem);
-                                    $cleanedGalleryItem = preg_replace('/\?.*/', '', $galleryItemEncoded);
-                                @endphp
-
-                                @if ($isImage || $isVideo)
+                                @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
+                                    @dd($galleryItem)
                                     <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
-                                        @if ($isImage)
-                                            <picture class="portfolio__item-picture">
-                                                <source srcset="{{ asset($galleryItem) }}" type="image/webp">
-                                                <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                    class="portfolio__item-image" width="224" height="224"
-                                                    alt="Картинка">
-                                            </picture>
-                                        @elseif ($isVideo)
-                                            <video class="portfolio__item-video" width="224" height="224"
-                                                src="{{ $cleanedGalleryItem }}#t=0.001" preload="metadata"
-                                                controls></video>
-                                        @endif
+                                        <video class="portfolio__item-video" width="224" height="224"
+                                            src="{{ asset($galleryItem) }}#t=0.001" preload="metadata"></video>
+                                        <button type="button" class="btn">
+                                            <span class="icon">
+                                                <svg>
+                                                    <use xlink:href="img/icons/x.svg#svg-x"></use>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </li>
+                                @endif
+                                @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
+                                    <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
+                                        <picture class="portfolio__item-picture">
+                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
+                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
+                                                class="portfolio__item-image" width="224" height="224" alt="Картинка">
+                                        </picture>
                                         <button type="button" class="btn">
                                             <span class="icon">
                                                 <svg>
@@ -126,9 +126,57 @@
                                 @endif
                             @endforeach
                         </ul>
+                        <div class="portfolio-swiper swiper-control js-swiper-portfolio">
+                            <div class="swiper">
+                                <div class="swiper-wrapper">
+                                    @if ($user->gallery)
+                                        @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
+                                            <div class="swiper-slide">
+                                                <div class="portfolio__slide">
+                                                    <div class="portfolio__item"
+                                                        data-graph-path="portfolio-item{{ $key }}">
+                                                        <picture class="portfolio__item-picture">
+                                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
+                                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
+                                                                class="portfolio__item-image" width="224" height="224"
+                                                                alt="Картинка">
+                                                        </picture>
+                                                        <button type="button" class="btn">
+                                                            <span class="icon">
+                                                                <svg>
+                                                                    <use xlink:href="img/icons/x.svg#svg-x"></use>
+                                                                </svg>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
+                                                <div class="swiper-slide">
+                                                    <div class="portfolio__slide">
+                                                        <div class="portfolio__item"
+                                                            data-graph-path="portfolio-item{{ $key }}">
+                                                            <video class="portfolio__item-video" width="224"
+                                                                height="224" src="{{ asset($galleryItem) }}#t=0.001"
+                                                                preload="metadata"></video>
+                                                            <button type="button" class="btn">
+                                                                <span class="icon">
+                                                                    <svg>
+                                                                        <use xlink:href="img/icons/x.svg#svg-x"></use>
+                                                                    </svg>
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="swiper-scrollbar"></div>
+                        </div>
                     @endif
-
-
                 </div>
             </section>
             <section class="section" style="margin-top: 0;">
