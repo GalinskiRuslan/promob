@@ -180,16 +180,15 @@ class UserViewController extends Controller
         ]);
 
         $user = Auth::user();
-        $path = Cloudinary::upload($request->file('file')->getRealPath(), [
+        $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
             'folder' => $user->email . 'portfolio',
-            'format' => 'webp',  // Конвертация в формат WebP
+            'format' => 'webp',
             'quality' => 'auto',
-            'curl_options' => [
-                CURLOPT_SSL_VERIFYPEER => false, // Отключение проверки SSL
-                CURLOPT_SSL_VERIFYHOST => false, // Отключение проверки хоста SSL
-            ],
         ]);
-        $user->photos = $path;
+
+        // Получаем URL изображения
+        $uploadedFileUrl = $uploadedFile->getSecurePath();
+        $user->photos = $uploadedFileUrl;
         $user->save();
         return redirect()->back();
     }
