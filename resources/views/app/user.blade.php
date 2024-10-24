@@ -94,7 +94,7 @@
                     @if ($user->gallery)
                         <ul class="list-reset portfolio">
                             @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
+                                @if (preg_match('/(.jpg|.jpeg|.png|.gif|.svg|.webp)$/i', $galleryItem))
                                     <li class="portfolio__item" data-graph-path="portfolio-item{{ $key }}">
                                         <picture class="portfolio__item-picture">
                                             <source srcset="{{ asset($galleryItem) }}" type="image/webp">
