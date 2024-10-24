@@ -7,6 +7,7 @@ use App\Jobs\ConvertImageToWebP;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\User;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -177,18 +178,17 @@ class UserViewController extends Controller
         $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,jpg,svg,heic,webp',
         ]);
-        $file = $request->file('file');
-        $user = Auth::user();
-        if ($user->photos) {
 
-            $clearPath = str_replace("https://dspt7sohnkg6q.cloudfront.net/", "", $user->photos);
-            Storage::disk('s3')->delete($clearPath);
-        }
-        if ($user->email) {
-            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->email . '/avatar', $file);
-        } else {
-            $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->put($user->tel . '/avatar', $file);
-        }
+        $user = Auth::user();
+        $path = Cloudinary::upload($request->file('file')->getRealPath(), [
+            'folder' => $user->email . 'portfolio',
+            'format' => 'webp',  // Конвертация в формат WebP
+            'quality' => 'auto',
+            'curl_options' => [
+                CURLOPT_SSL_VERIFYPEER => false, // Отключение проверки SSL
+                CURLOPT_SSL_VERIFYHOST => false, // Отключение проверки хоста SSL
+            ],
+        ]);
         $user->photos = $path;
         $user->save();
         return redirect()->back();
