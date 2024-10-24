@@ -158,7 +158,7 @@
                                                     data-graph-path="portfolio-item{{ $key }}">
                                                     @if ($isImage)
                                                         <!-- Используем Cloudinary компонент для изображения -->
-                                                        <x-cloudinary::image public-id="{{ $galleryItem }}"
+                                                        <x-cloudinary::image public-id="{{ explode('?', $galleryItem)[0] }}"
                                                             transformation="w_224,h_224,c_fill" />
                                                     @elseif ($isVideo)
                                                         <!-- Используем Cloudinary компонент для видео -->
