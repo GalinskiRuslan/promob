@@ -40,9 +40,16 @@ class PortofolioController extends Controller
                 $user->gallery = json_encode($userGallery);
                 $user->save();
             } else if (Str::contains($request->file('file')->getMimeType(), 'video')) {
-                $path = "https://dspt7sohnkg6q.cloudfront.net/" . Storage::disk('s3')->putFile($user->email . '/portfolio', $request->file('file'));
+                $uploadedFile = Cloudinary::uploadVideo($request->file('file')->getRealPath(), [
+                    'folder' => $user->email . '/portfolio',
+                    'resource_type' => 'video',
+                    'quality' => 'auto', // Автоматическая оптимизация качества
+                    'fetch_format' => 'auto', // Автоматическая оптимизация формата
+                ]);
+                $path = $uploadedFile->getSecurePath();
+                $publicId = $uploadedFile->getPublicId();
                 $userGallery = $user->gallery ? json_decode($user->gallery, true) : []; // Распарсим текущую галерею
-                $userGallery[] = $path; // Добавим новый путь в массив галереи
+                $userGallery[] = $path . '?public_id=' . $publicId; // Добавим новый путь в массив галереи
                 $user->gallery = json_encode($userGallery); // Закодируем массив обратно в JSON
                 $user->save(); //
             } else {
