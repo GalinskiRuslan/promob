@@ -185,7 +185,7 @@ class UserViewController extends Controller
         $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
             'folder' => $user->email . 'portfolio',
             'format' => 'webp',
-            'quality' => 'auto',
+            'quality' => '80',
         ]);
         //удаляем старый аватар
         Cloudinary::destroy($queryParams['public_id']);
