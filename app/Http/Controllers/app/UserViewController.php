@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maestroerror\HeicToJpg;
 use WebPConvert\WebPConvert;
+use App\Http\Services\Helpers;
 
 class UserViewController extends Controller
 {
@@ -185,14 +186,18 @@ class UserViewController extends Controller
             'format' => 'webp',
             'quality' => 'auto',
         ]);
+        $parsedUrl = parse_url($user->photos);
+        $path = $parsedUrl['path']; // Получаем путь из URL
 
+        // Убираем "/upload/" и расширение файла
+        $publicIdWithExtension = substr($path, strpos($path, 'upload/') + strlen('upload/'));
+
+        // Убираем расширение файла
+        $publicId = pathinfo($publicIdWithExtension, PATHINFO_FILENAME);
+        Cloudinary::destroy($publicId);
         // Получаем URL изображения
         $uploadedFileUrl = $uploadedFile->getSecurePath();
-        $publicId = $uploadedFile->getPublicId(); // Публичный ID файла
-
-        // Сохраняем URL и public_id в массив
-        $imageData = [$uploadedFileUrl, $publicId];
-        $user->photos = $imageData;
+        $user->photos = $uploadedFileUrl;
         $user->save();
         return redirect()->back();
     }

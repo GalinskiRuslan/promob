@@ -21,7 +21,6 @@ class ConvertImageToWebP implements ShouldQueue
 
     public function handle()
     {
-        dd("ZAEBAL!");
         $tempPath = storage_path('app/' . $this->file);
 
         $outputWebPPath = $tempPath . '.webp';
