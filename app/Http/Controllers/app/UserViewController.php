@@ -194,7 +194,7 @@ class UserViewController extends Controller
 
         // Убираем расширение файла
         $publicId = pathinfo($publicIdWithExtension, PATHINFO_FILENAME);
-        dd($publicId);
+        dd($publicId, $uploadedFile->getPublicId());
         Cloudinary::destroy($publicId);
         // Получаем URL изображения
         $uploadedFileUrl = $uploadedFile->getSecurePath();
