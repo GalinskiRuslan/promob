@@ -186,19 +186,11 @@ class UserViewController extends Controller
             'format' => 'webp',
             'quality' => 'auto',
         ]);
-        $parsedUrl = parse_url($user->photos);
-        $path = $parsedUrl['path']; // Получаем путь из URL
 
-        // Убираем "/upload/" и расширение файла
-        $publicIdWithExtension = substr($path, strpos($path, 'upload/') + strlen('upload/'));
-
-        // Убираем расширение файла
-        $publicId = pathinfo($publicIdWithExtension, PATHINFO_FILENAME);
-        dd($publicId, $uploadedFile->getPublicId());
-        Cloudinary::destroy($publicId);
         // Получаем URL изображения
         $uploadedFileUrl = $uploadedFile->getSecurePath();
-        $user->photos = $uploadedFileUrl;
+        $publicId = $uploadedFile->getPublicId();
+        $user->photos = $uploadedFileUrl . '?public_id=' . $publicId;
         $user->save();
         return redirect()->back();
     }
