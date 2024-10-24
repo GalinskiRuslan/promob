@@ -181,6 +181,8 @@ class UserViewController extends Controller
         ]);
 
         $user = Auth::user();
+        parse_str(parse_url($user->photos)['query'], $queryParams);
+        dd($queryParams);
         $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
             'folder' => $user->email . 'portfolio',
             'format' => 'webp',
