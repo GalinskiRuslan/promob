@@ -3,22 +3,16 @@
 namespace App\Http\Controllers\app;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ConvertImageToWebP;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Maestroerror\HeicToJpg;
-use WebPConvert\WebPConvert;
-use App\Http\Services\Helpers;
 
 class UserViewController extends Controller
 {
@@ -183,7 +177,7 @@ class UserViewController extends Controller
         $user = Auth::user();
         parse_str(parse_url($user->photos)['query'], $queryParams);
         $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
-            'folder' => $user->email . 'portfolio',
+            'folder' => $user->email . '/portfolio',
             'format' => 'webp',
             'quality' => '80',
         ]);

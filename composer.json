@@ -14,8 +14,6 @@
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "league/flysystem-aws-s3-v3": "^3.29",
-        "pbmedia/laravel-ffmpeg": "^8.5",
-        "rosell-dk/webp-convert": "^2.9",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
