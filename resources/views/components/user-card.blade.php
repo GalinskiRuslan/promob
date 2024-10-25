@@ -55,35 +55,10 @@
 
         </div>
     </div>
-    <div class="card__swiper swiper-control js-swiper-card">
-        <div class="swiper">
-            <div class="user-item__container-image">
-                @if ($user->gallery)
-                    @foreach (json_decode($user->gallery, true) as $galleryItem)
-                        @if (preg_match('/(jpg|jpeg|png|gif|svg|webp)$/i', $galleryItem))
-                            <div class="user-card__portfolio">
-                                <picture class="swiper-slide-picture">
-                                    <source srcset="{{ asset($galleryItem) }}" type="image/webp">
-                                    <img loading="lazy" src="{{ asset($galleryItem) }}" class="portfolio__item-image"
-                                        onclick="openModal('{{ asset($galleryItem) }}', 'img')" width="224"
-                                        height="224" alt="Картинка">
-                                </picture>
-                            </div>
-                        @endif
-                        @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
-                            <div class="user-card__portfolio">
-                                <video class="portfolio__item-video" width="350" height="224" preload="metadata"
-                                    onclick="openModal('{{ asset($galleryItem) }}', 'video')"
-                                    src="{{ asset($galleryItem) }}#t=0.001">
-                                    <source src="{{ asset($galleryItem) }}">
-                                </video>
-                            </div>
-                        @endif
-                    @endforeach
-                @endif
-            </div>
-        </div>
-        <div class="swiper-scrollbar"></div>
+    <div>
+        @if ($user->gallery)
+            <x-potrfolio-items :items="$user->gallery" />
+        @endif
     </div>
     <div>
         <ul class="list-reset form-options">

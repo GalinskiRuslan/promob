@@ -153,80 +153,9 @@
                                 @endforeach
                             @endif
                         </ul>
-                        <div class="portfolio-swiper portfolio-swiper--edit swiper-control js-swiper-portfolio">
-                            <div class="swiper">
-                                <div class="swiper-wrapper">
-                                    @if ($user->gallery)
-                                        @foreach (json_decode($user->gallery, true) as $key => $galleryItem)
-                                            <div class="swiper-slide">
-                                                <div class="portfolio__slide">
-                                                    <div class="portfolio__item">
-                                                        <picture class="portfolio__item-picture"
-                                                            data-graph-path="portfolio-item{{ $key }}">
-                                                            <source srcset="{{ asset($galleryItem) }}" type="image/webp">
-                                                            <img loading="lazy" src="{{ asset($galleryItem) }}"
-                                                                class="portfolio__item-image" width="350"
-                                                                height="224" alt="Картинка">
-                                                        </picture>
-                                                        <form action="{{ route('portfolio_delete') }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="hidden" name="fileName"
-                                                                value="{{ $galleryItem }}">
-                                                            <button type="submit" class="dz-portfolio-delete"
-                                                                title="Удалить">
-                                                                <svg width="26" height="24" viewBox="0 0 26 24"
-                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path d="M19.6458 6L6.94922 18" stroke="white"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round" />
-                                                                    <path d="M6.94922 6L19.6458 18" stroke="white"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round" />
-                                                                </svg>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', $galleryItem))
-                                                <div class="swiper-slide">
-                                                    <div class="portfolio__slide">
-                                                        <div class="portfolio__item">
-                                                            <video class="portfolio__item-video" width="350"
-                                                                height="224" src="{{ asset($galleryItem) }}#t=0.001"
-                                                                preload="metadata"
-                                                                data-graph-path="portfolio-item{{ $key }}"></video>
-                                                            <form action="{{ route('portfolio_delete') }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <input type="hidden" name="fileName"
-                                                                    value="{{ $galleryItem }}">
-                                                                <button type="submit" class="dz-portfolio-delete"
-                                                                    title="Удалить">
-                                                                    <svg width="26" height="24"
-                                                                        viewBox="0 0 26 24" fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path d="M19.6458 6L6.94922 18" stroke="white"
-                                                                            stroke-width="2" stroke-linecap="round"
-                                                                            stroke-linejoin="round" />
-                                                                        <path d="M6.94922 6L19.6458 18" stroke="white"
-                                                                            stroke-width="2" stroke-linecap="round"
-                                                                            stroke-linejoin="round" />
-                                                                    </svg>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="swiper-scrollbar"></div>
-                        </div>
+                        @if ($user->gallery)
+                            <x-potrfolio-items :items="$user->gallery" :isEdit="true" />
+                        @endif
                         <form action="{{ route('portfolio_gallery') }}"
                             class="dropzone portfolio-dropzone dropzone-files edit-portfolio" method="POST"
                             enctype="multipart/form-data">
@@ -616,14 +545,12 @@
 
             .dz-portfolio-delete {
                 position: absolute;
-                background: transparent;
+                background: radial-gradient(black, transparent);
                 border: none;
                 right: 20px;
                 top: 20px;
                 cursor: pointer;
                 z-index: 100;
-                opacity: 0;
-                visibility: hidden;
                 transition: .15s all
             }
 
