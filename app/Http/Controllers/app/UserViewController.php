@@ -175,7 +175,7 @@ class UserViewController extends Controller
         ]);
 
         $user = Auth::user();
-        if (!$user->photos) {
+        if ($user->photos) {
             parse_str(parse_url($user->photos)['query'], $queryParams);
             //удаляем старый аватар
             Cloudinary::destroy($queryParams['public_id']);
