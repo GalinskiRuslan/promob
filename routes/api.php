@@ -18,3 +18,6 @@ Route::post('/setNewPassword', [ApiAuthController::class, 'setNewPassword']);
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/logout', [ApiAuthController::class, 'logout']);
 Route::post('/registerWithEmail', [ApiAuthController::class, 'registerWithEmail']);
+
+
+Route::get('/cities', [ApiAuthController::class, 'getAllCities']);

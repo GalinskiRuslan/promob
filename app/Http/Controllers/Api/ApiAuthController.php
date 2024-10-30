@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterWithMailRequest;
 use App\Http\Services\SmsService;
+use App\Models\City;
 use App\Models\User;
 use App\Models\VerifySms;
 use Illuminate\Http\Request;
@@ -140,5 +141,10 @@ class ApiAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
+    }
+    public function getAllCities(Request $request)
+    {
+        City::all();
+        return response()->json(['cities' => City::all()], 200);
     }
 }
