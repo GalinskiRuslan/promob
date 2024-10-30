@@ -9,7 +9,6 @@ use App\Models\City;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
