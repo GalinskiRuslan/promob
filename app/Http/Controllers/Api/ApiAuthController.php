@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterWithMailRequest;
 use App\Mail\VerificationMail;
 use App\Http\Services\SmsService;
+use App\Models\City;
 use App\Models\User;
 use App\Models\VerifySms;
 use Illuminate\Http\Request;
