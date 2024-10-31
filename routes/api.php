@@ -23,6 +23,7 @@ Route::post('/registrationWithCode', [ApiAuthController::class, 'registrationWit
 Route::post('/setNewPassword', [ApiAuthController::class, 'setNewPassword']);
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/registerWithEmail', [ApiAuthController::class, 'registerWithEmail']);
+Route::post('/loginWithMail', [ApiAuthController::class, 'loginWithMail']);
 Route::post('/deleteAccount', [ApiAuthController::class, 'deleteAccount']);
 ///Нужно сделать сброс пароля для двух ролей
 
@@ -41,5 +42,5 @@ Route::get('/getUsersWithCityAndCategory', [ApiUserController::class, 'getUsersW
 
 
 // Получение Данных о городе, категориях
-Route::get('/getAllCities', [ApiCitycontroller::class, 'getCit']);
+Route::get('/getAllCities', [ApiCitycontroller::class, 'getAllCities']);
 Route::get('/getAllCategories', [ApiAppInformController::class, 'getAllCategories']);

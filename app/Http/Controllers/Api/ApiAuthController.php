@@ -60,11 +60,15 @@ class ApiAuthController extends Controller
     }
     public function registrationWithSms(Request $request)
     {
-        $validated = $request->validate([
-            'code_id' => 'required|string',
-            'code' => 'required|string|size:4',
-            'password' => 'required|string'
-        ]);
+        try {
+            $validated = $request->validate([
+                'code_id' => 'required|string',
+                'code' => 'required|string|size:4',
+                'password' => 'required|string'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
 
         $verifySms = VerifySms::where('code_id', $validated['code_id'])->first();
 
