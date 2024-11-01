@@ -13,8 +13,15 @@ class CityController extends Controller
     public function index(Request $request, $city)
     {
         $corrent_city = City::where('alias', $city)->get()->first();
+        $categoryAlias = $request->query('category');
+        $category = $categoryAlias ? Category::where('alias', $categoryAlias)->first() : null;
         if ($corrent_city) {
-            $users = $corrent_city->users()->paginate(20);
+            if ($category) {
+                $users = User::withCategoriesAndCity([$category->id], $corrent_city->id)->paginate(20);
+            } else {
+                // Если категории нет, берем всех пользователей города
+                $users = $corrent_city->users()->paginate(20);
+            }
         } else {
             $users = User::where('role', 'executor')->paginate(20);
             $corrent_city = City::get()->first();
