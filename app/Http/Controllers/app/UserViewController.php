@@ -178,7 +178,9 @@ class UserViewController extends Controller
         if ($user->photos) {
             parse_str(parse_url($user->photos)['query'], $queryParams);
             //удаляем старый аватар
-            Cloudinary::destroy($queryParams['public_id']);
+            if ($queryParams['public_id']) {
+                Cloudinary::destroy($queryParams['public_id']);
+            }
         }
         $uploadedFile = Cloudinary::upload($request->file('file')->getRealPath(), [
             'folder' => $user->email . '/portfolio',
