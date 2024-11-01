@@ -11,11 +11,12 @@ class AppController extends Controller
 {
     public function index()
     {
-
-        /*  if (session('city')) {
-            return redirect('/' . session('city')->alias);
-        } */
-        $users = User::all()->shuffle();
+        $users = User::where('role', 'executor')
+            ->whereNotNull('photos')
+            ->whereNotNull('name')
+            ->whereNotNull('cost_up')
+            ->inRandomOrder()
+            ->paginate(10);
         return view('app.index', ['users' => $users]);
     }
     public function category($category)

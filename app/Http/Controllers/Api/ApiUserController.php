@@ -161,4 +161,13 @@ class ApiUserController extends Controller
             ],
         ], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
+    public function getUserInfo(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            return response()->json(['user' => $user], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        } catch (JWTException $e) {
+            return response()->json(['message' => $e->getMessage()], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+    }
 }

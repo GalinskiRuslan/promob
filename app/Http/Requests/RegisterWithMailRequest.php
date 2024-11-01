@@ -14,9 +14,8 @@ class RegisterWithMailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8',],
-            'name' => ['required', 'string', 'max:255'],
         ];
     }
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

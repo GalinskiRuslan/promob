@@ -31,7 +31,7 @@ class ApiAuthController extends Controller
         }
         if (!User::where('tel', $request->tel)->first() || !User::where('tel', $request->tel)->first()->is_verified) {
             $existingCode = VerifySms::where('tel', $request->tel)->first();
-            if ($existingCode && $existingCode->created_at->diffInMinutes(now()) < 3) {
+            if ($existingCode && $existingCode->updated_at->diffInMinutes(now()) < 3) {
                 return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400);
             }
             $verificationCode = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
@@ -43,7 +43,7 @@ class ApiAuthController extends Controller
                 // return response()->json(['message' => $response->getData()->error], 400);
                 // } else {
                 VerifySms::updateOrCreate(
-                    ['tel' => $request->tel],
+                    ['tel' => '+' . $request->tel],
                     [
                         'code_id' => $code_id,
                         'code' => $verificationCode
@@ -123,7 +123,7 @@ class ApiAuthController extends Controller
     {
         try {
             $request->validate([
-                'tel' => 'required|string|min:10|max:11',
+                'tel' => 'required|string|min:10|max:12',
                 'password' => 'required|string|min:8',
             ]);
         } catch (\Exception $e) {
@@ -148,6 +148,9 @@ class ApiAuthController extends Controller
     }
     public function registerWithEmail(RegisterWithMailRequest $request)
     {
+        if (User::where('email', $request->email)->first()) {
+            return response()->json(['message' => 'Пользователь уже зарегистрирован'], 400);
+        }
         $validated = $request->validated();
         $emailVerificationToken = Str::random(32);
         try {
@@ -160,7 +163,6 @@ class ApiAuthController extends Controller
             $user = User::create([
                 'email' => $validated['email'],
                 'password' => bcrypt($validated['password']),
-                'name' => $validated['name'],
                 'role' => 'client',
                 'email_token' => $emailVerificationToken,
             ]);
