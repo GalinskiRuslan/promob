@@ -17,7 +17,7 @@ class CityController extends Controller
         $category = $categoryAlias ? Category::where('alias', $categoryAlias)->first() : null;
         if ($corrent_city) {
             if ($category) {
-                $users = User::withCategoriesAndCity([$category->id], $corrent_city->id)->paginate(20);
+                $users = User::withCategoriesAndCity([$category->id], $corrent_city->id)->whereNotNull('photos')->paginate(20);
             } else {
                 // Если категории нет, берем всех пользователей города
                 $users = $corrent_city->users()->paginate(20);
