@@ -462,7 +462,7 @@
 
                             // Остальные категории с ID больше 13
                             $categoriesAbove13 = $categories->filter(fn($category) => $category->id > 13);
-                            $sortedCategories = collect([$categoriesUpTo13])->merge($categoriesAbove13);
+                            $sortedCategories = $categoriesUpTo13->merge($categoriesAbove13);
                         @endphp
                         @foreach ($sortedCategories as $category)
                             <li>
