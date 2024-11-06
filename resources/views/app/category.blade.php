@@ -101,7 +101,7 @@
                     <ul class="list-reset menu__job menu__job--catalog">
                         @php
                             $categories = \App\Models\Category::all()->reverse();
-                            $categoriesUpTo13 = $categories->filter(fn($category) => $category->id <= 13)->reverse();
+                            $categoriesUpTo13 = $categories->filter(fn($category) => $category->id <= 13);
 
                             // Остальные категории с ID больше 13
                             $categoriesAbove13 = $categories->filter(fn($category) => $category->id > 13);
