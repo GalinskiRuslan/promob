@@ -458,9 +458,11 @@
                     <ul class="list-reset menu__job">
                         @php
                             $categories = \App\Models\Category::all()->reverse();
-                            $firstCategory = $categories->firstWhere('id', 13);
-                            $otherCategories = $categories->filter(fn($category) => $category->id !== 13);
-                            $sortedCategories = collect([$firstCategory])->merge($otherCategories);
+                            $categoriesUpTo13 = $categories->filter(fn($category) => $category->id <= 13)->reverse();
+
+                            // Остальные категории с ID больше 13
+                            $categoriesAbove13 = $categories->filter(fn($category) => $category->id > 13);
+                            $sortedCategories = collect([$categoriesUpTo13])->merge($categoriesAbove13);
                         @endphp
                         @foreach ($sortedCategories as $category)
                             <li>
