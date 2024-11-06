@@ -458,8 +458,11 @@
                     <ul class="list-reset menu__job">
                         @php
                             $categories = \App\Models\Category::all()->reverse();
+                            $firstCategory = $categories->firstWhere('id', 13);
+                            $otherCategories = $categories->filter(fn($category) => $category->id !== 13);
+                            $sortedCategories = collect([$firstCategory])->merge($otherCategories);
                         @endphp
-                        @foreach ($categories as $category)
+                        @foreach ($sortedCategories as $category)
                             <li>
                                 <a href="{{ route('category', ['category' => $category->alias]) }}"
                                     class="btn menu__job-link"

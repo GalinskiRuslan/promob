@@ -116,6 +116,7 @@
         width: 120px;
         height: 18px;
         background: #fff;
+        border-radius: 20px;
     }
 
     .user-item__container-image::-webkit-scrollbar-thumb {

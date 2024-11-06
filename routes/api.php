@@ -33,6 +33,8 @@ Route::get('/getUserInfo', [ApiUserController::class, 'getUserInfo']);
 Route::post('/savePortfolioItem', [ApiPortfolioController::class, 'savePortfolioItem']);
 Route::post('/editUserInfo', [ApiUserController::class, 'editUserInfo']);
 Route::post('/uploadAvatar', [ApiUserController::class, 'uploadAvatar']);
+Route::post('/updateContacts', [ApiUserController::class, 'changeContactsUser']);
+Route::post('/updateInfoAboutUser', [ApiUserController::class, 'changeUserInfo']);
 
 //Получение данных о пользователях
 Route::get('/getAllUsers', [ApiUserController::class, 'getAllUsers']);
@@ -45,3 +47,9 @@ Route::get('/getUsersWithCityAndCategory', [ApiUserController::class, 'getUsersW
 // Получение Данных о городе, категориях
 Route::get('/getAllCities', [ApiCitycontroller::class, 'getAllCities']);
 Route::get('/getAllCategories', [ApiAppInformController::class, 'getAllCategories']);
+
+// Статистика исполнителей
+Route::get('/addViewCount', [ApiUserController::class, 'addViewCount']);
+Route::get('/clickContacts', [ApiUserController::class, 'clickContacts']);
+Route::get('/getStatistic', [ApiUserController::class, 'getStatistic']);
+Route::get('/getComments', [ApiUserController::class, 'getComments']);
