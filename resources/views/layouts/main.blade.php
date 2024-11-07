@@ -1820,6 +1820,79 @@
                     })
             });
         </script>
+        <script>
+            let arrItems;
+            let indexGlob;
+
+            function openModal(items, type, index) {
+                arrItems = JSON.parse(items);
+                indexGlob = index;
+                let modal = document.getElementById("modal");
+                let modalImg = document.getElementById("modalImage");
+                let modalVideo = document.getElementById("modalVideo");
+                modalImg.style.display = "none";
+                modalVideo.style.display = "none";
+                modal.style.display = "flex";
+                if (type === 'img') {
+                    modalImg.src = arrItems[indexGlob];
+                    modalImg.style.display = "block";
+                } else {
+                    modalVideo.style.display = "block";
+                    modalVideo.src = arrItems[indexGlob];
+                }
+            }
+
+            function nextImg() {
+                let modalImg = document.getElementById("modalImage");
+                let modalVideo = document.getElementById("modalVideo");
+                if (indexGlob < arrItems.length - 1) {
+                    indexGlob++;
+                } else {
+                    indexGlob = 0;
+                }
+                if (!/\.(mp4|webm|mov)(\?|#|$)/i.test(arrItems[indexGlob])) {
+                    console.log('video');
+                    modalVideo.style.display = "none";
+                    modalImg.style.display = "block";
+                    modalImg.src = arrItems[indexGlob];
+
+                } else {
+                    modalVideo.src = arrItems[indexGlob];
+                    modalVideo.style.display = "block";
+                    modalImg.style.display = "none";
+                }
+            }
+
+            function prevImg() {
+                let modalImg = document.getElementById("modalImage");
+                let modalVideo = document.getElementById("modalVideo");
+                if (indexGlob > 1) {
+                    indexGlob = indexGlob - 1;
+                } else {
+                    indexGlob = arrItems.length - 1;
+                }
+                if (!/\.(mp4|webm|mov)(\?|#|$)/i.test(arrItems[indexGlob])) {
+                    console.log('video');
+                    modalVideo.style.display = "none";
+                    modalImg.style.display = "block";
+                    modalImg.src = arrItems[indexGlob];
+
+                } else {
+                    modalVideo.src = arrItems[indexGlob];
+                    modalVideo.style.display = "block";
+                    modalImg.style.display = "none";
+                }
+            }
+
+            function closeModal() {
+                var modal = document.getElementById("modal");
+                var modalImg = document.getElementById("modalImage");
+                var modalVideo = document.getElementById("modalVideo");
+                modalImg.style.display = "none";
+                modalVideo.src = "";
+                modal.style.display = "none";
+            }
+        </script>
     </div>
 </body>
 

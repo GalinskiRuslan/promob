@@ -9,15 +9,15 @@
                             <picture class="swiper-slide-picture">
                                 <source srcset="{{ asset($galleryItem) }}" type="image/webp">
                                 <img loading="lazy" src="{{ asset($galleryItem) }}" class="portfolio__item-image"
-                                    onclick="openModal('{{ asset($galleryItem) }}', 'img')" width="224"
-                                    height="224" alt="Картинка">
+                                    onclick="openModal('{{ $items }}', 'img', {{ $loop->index }})"
+                                    width="224" height="224" alt="Картинка">
                             </picture>
                         </div>
                     @endif
                     @if (preg_match('/\.?(mp4|mov|avi|mkv)$/i', explode('?', $galleryItem)[0]))
                         <div class="user-card__portfolio">
                             <video class="portfolio__item-video" width="350" height="224" preload="metadata"
-                                onclick="openModal('{{ asset($galleryItem) }}', 'video')"
+                                onclick="openModal('{{ $items }}', 'video', {{ $loop->index }})"
                                 src="{{ asset($galleryItem) }}#t=0.001">
                                 <source src="{{ asset($galleryItem) }}">
                             </video>
@@ -43,12 +43,15 @@
             @endforeach
         </div>
     </div>
-    {{-- <div class="swiper-scrollbar" style="margin: 30px"></div> --}}
 </div>
 <div id="modal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImage">
     <video class="modal-content" id="modalVideo" controls style="display: none;"></video>
+
+    <button class="nextBtn" onclick="nextImg()"></button>
+    <button class="prevBtn" onclick="prevImg()"></button>
+
 </div>
 
 <style>
@@ -140,30 +143,52 @@
     .item-card {
         position: relative;
     }
-</style>
-<script>
-    function openModal(imageSrc, type) {
-        var modal = document.getElementById("modal");
-        var modalImg = document.getElementById("modalImage");
-        var modalVideo = document.getElementById("modalVideo");
-        modalImg.style.display = "none";
-        modalVideo.style.display = "none";
-        modal.style.display = "flex";
-        if (type === 'img') {
-            modalImg.src = imageSrc;
-            modalImg.style.display = "block";
-        } else {
-            modalVideo.style.display = "block";
-            modalVideo.src = imageSrc;
-        }
+
+    .nextBtn {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transform: translateY(-50%);
+        z-index: 999;
     }
 
-    function closeModal() {
-        var modal = document.getElementById("modal");
-        var modalImg = document.getElementById("modalImage");
-        var modalVideo = document.getElementById("modalVideo");
-        modalImg.style.display = "none";
-        modalVideo.src = "";
-        modal.style.display = "none";
+    .nextBtn::before {
+        content: ' ';
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-top: 4px solid #9161DF;
+        border-right: 4px solid #9161DF;
+        transform: rotate(45deg);
+        margin: auto;
     }
-</script>
+
+    .prevBtn {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        width: 60px;
+        height: 60px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transform: translateY(-50%);
+        z-index: 999;
+    }
+
+    .prevBtn::before {
+        content: ' ';
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-top: 4px solid #9161DF;
+        border-right: 4px solid #9161DF;
+        transform: rotate(-135deg);
+        margin: auto;
+    }
+</style>
