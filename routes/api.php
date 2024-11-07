@@ -31,6 +31,7 @@ Route::post('/deleteAccount', [ApiAuthController::class, 'deleteAccount']);
 // Изменеие портфолио и информации о пользователе
 Route::get('/getUserInfo', [ApiUserController::class, 'getUserInfo']);
 Route::post('/savePortfolioItem', [ApiPortfolioController::class, 'savePortfolioItem']);
+Route::post('/deletePortfolioItem', [ApiPortfolioController::class, 'deletePortfolioItem']);
 Route::post('/editUserInfo', [ApiUserController::class, 'editUserInfo']);
 Route::post('/uploadAvatar', [ApiUserController::class, 'uploadAvatar']);
 Route::post('/updateContacts', [ApiUserController::class, 'changeContactsUser']);
