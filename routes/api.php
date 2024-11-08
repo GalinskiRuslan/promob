@@ -48,6 +48,7 @@ Route::get('/getUsersWithCityAndCategory', [ApiUserController::class, 'getUsersW
 // Получение Данных о городе, категориях
 Route::get('/getAllCities', [ApiCitycontroller::class, 'getAllCities']);
 Route::get('/getAllCategories', [ApiAppInformController::class, 'getAllCategories']);
+Route::get('/getCategoriesWithCity', [ApiAppInformController::class, 'getCategoriesWithCity']);
 
 // Статистика исполнителей
 Route::get('/addViewCount', [ApiUserController::class, 'addViewCount']);
