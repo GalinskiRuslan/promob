@@ -128,6 +128,7 @@ class ApiUserController extends Controller
                 ['user_id' => $user->id],           // Условие поиска записи
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
+            $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json(['users' => $users], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
@@ -140,6 +141,7 @@ class ApiUserController extends Controller
             DB::table('table_statistics_for_executors')
                 ->where('user_id', $user->id)
                 ->increment('view_count');
+            $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
@@ -156,6 +158,12 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
         $users = User::where('cities_id', $city)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        foreach ($users as $user) {
+            DB::table('table_statistics_for_executors')
+                ->where('user_id', $user->id)
+                ->increment('view_count');
+            $user->comments = Comment::where('user_id', $user->id)->get();
+        }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
             'meta' => [
@@ -171,6 +179,12 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $category = $request->input('category');
         $users = User::whereJsonContains('categories_id', [$category])->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        foreach ($users as $user) {
+            DB::table('table_statistics_for_executors')
+                ->where('user_id', $user->id)
+                ->increment('view_count');
+            $user->comments = Comment::where('user_id', $user->id)->get();
+        }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
             'meta' => [
