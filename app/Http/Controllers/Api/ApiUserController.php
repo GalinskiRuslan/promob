@@ -136,7 +136,7 @@ class ApiUserController extends Controller
     {
         // Получаем номер страницы и количество элементов на странице из запроса (по умолчанию 10)
         $perPage = $request->input('per_page', 10);
-        $users = User::paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::paginate($perPage, ['*'], 'page', $request->input('page', 1))->where('photos', '!=', null)->where('cost_from', '!=', null);
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')
                 ->where('user_id', $user->id)
@@ -157,7 +157,7 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
-        $users = User::where('cities_id', $city)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')
                 ->where('user_id', $user->id)
@@ -178,7 +178,7 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $category = $request->input('category');
-        $users = User::whereJsonContains('categories_id', [$category])->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')
                 ->where('user_id', $user->id)

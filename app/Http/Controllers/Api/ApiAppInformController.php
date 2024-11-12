@@ -15,7 +15,7 @@ class ApiAppInformController extends Controller
         $categories = Category::all();
         foreach ($categories as $category) {
             // Подсчет пользователей, у которых в categories_id есть текущая категория
-            $category->users_count = User::whereRaw("JSON_CONTAINS(categories_id, ?)", ['["' . $category->id . '"]'])->count();
+            $category->users_count = User::whereRaw("JSON_CONTAINS(categories_id, ?)", ['["' . $category->id . '"]'])->where('photos', '!=', null)->where('cost_from', '!=', null)->count();
             $category->users_count += User::whereJsonContains('categories_id', $category->id)->count();
         }
         return response()->json(['categories' => $categories], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
