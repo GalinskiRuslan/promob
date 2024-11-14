@@ -189,7 +189,7 @@ class ApiUserController extends Controller
             $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json([
-            'data' => $users->items(), // Массив пользователей
+            'data' => $users, // Массив пользователей
             'meta' => [
                 'current_page' => $users->currentPage(),
                 'per_page' => $users->perPage(),
