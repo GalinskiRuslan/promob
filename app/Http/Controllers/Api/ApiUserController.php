@@ -324,6 +324,7 @@ class ApiUserController extends Controller
             return response()->json(['message' => $e->getMessage()],  400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         $user = User::find($request->id);
+        $user->comments = Comment::where('user_id', $user->id)->get();
         return response()->json(['user' => $user], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 }
