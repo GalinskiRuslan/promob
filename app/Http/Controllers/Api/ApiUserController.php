@@ -136,11 +136,12 @@ class ApiUserController extends Controller
     {
         // Получаем номер страницы и количество элементов на странице из запроса (по умолчанию 10)
         $perPage = $request->input('per_page', 10);
-        $users = User::paginate($perPage, ['*'], 'page', $request->input('page', 1))->where('photos', '!=', null)->where('cost_from', '!=', null);
+        $users = User::where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
-            DB::table('table_statistics_for_executors')
-                ->where('user_id', $user->id)
-                ->increment('view_count');
+            DB::table('table_statistics_for_executors')->updateOrInsert(
+                ['user_id' => $user->id],           // Условие поиска записи
+                ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
+            );
             $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json([
@@ -157,11 +158,12 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
-        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->orderByRaw('gallery IS NOT NULL DESC')->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
-            DB::table('table_statistics_for_executors')
-                ->where('user_id', $user->id)
-                ->increment('view_count');
+            DB::table('table_statistics_for_executors')->updateOrInsert(
+                ['user_id' => $user->id],           // Условие поиска записи
+                ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
+            );
             $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json([
@@ -178,11 +180,12 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $category = $request->input('category');
-        $users = User::whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->orderByRaw('gallery IS NOT NULL DESC')->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
-            DB::table('table_statistics_for_executors')
-                ->where('user_id', $user->id)
-                ->increment('view_count');
+            DB::table('table_statistics_for_executors')->updateOrInsert(
+                ['user_id' => $user->id],           // Условие поиска записи
+                ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
+            );
             $user->comments = Comment::where('user_id', $user->id)->get();
         }
         return response()->json([
@@ -294,5 +297,21 @@ class ApiUserController extends Controller
         }
         $comments = Comment::where('target_user_id', $user->id)->get();
         return response()->json(['comments' => $comments], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
+    public function clickContacts(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_id' => 'required|numeric|exists:users,id',
+            ]);
+        } catch (JWTException $e) {
+            return response()->json(['message' => $e->getMessage()],  400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        DB::table('table_statistics_for_executors')
+            ->updateOrInsert(
+                ['user_id' => $request->user_id], // Условие: `user_id` в таблице
+                ['click_contacts' => DB::raw('click_contacts + 1')] // Инкремент, если запись существует
+            );
+        return response()->json(['message' => 'ok'], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 }
