@@ -129,8 +129,7 @@ class ApiAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-        $requestPhone = preg_replace('/\D+/', '', $request->tel);
-        $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$requestPhone])->first();
+        $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first();
         if (!$user) {
             return response()->json(['message' => 'Пользователь не найден'], 400);
         }
