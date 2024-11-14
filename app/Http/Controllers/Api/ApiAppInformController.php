@@ -18,7 +18,7 @@ class ApiAppInformController extends Controller
             $category->users_count = User::whereRaw("JSON_CONTAINS(categories_id, ?)", ['["' . $category->id . '"]'])->where('photos', '!=', null)->where('cost_from', '!=', null)->count();
             $category->users_count += User::whereJsonContains('categories_id', $category->id)->count();
         }
-        $categoriesUpTo13 = $categories->filter(fn($category) => $category->id <= 13);
+        $categoriesUpTo13 = $categories->filter(fn($category) => $category->id <= 13)->reverse();
 
         // Остальные категории с ID больше 13
         $categoriesAbove13 = $categories->filter(fn($category) => $category->id > 13);
