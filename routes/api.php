@@ -39,6 +39,7 @@ Route::post('/updateInfoAboutUser', [ApiUserController::class, 'changeUserInfo']
 
 //Получение данных о пользователях
 Route::get('/getAllUsers', [ApiUserController::class, 'getAllUsers']);
+Route::get('/getUserById', [ApiUserController::class, 'getUserById']);
 Route::get('/getUsersWithPagination', [ApiUserController::class, 'getUsersWithPagination']);
 Route::get('/getUsersWithCity', [ApiUserController::class, 'getUsersWithCity']);
 Route::get('/getUsersWithCategory', [ApiUserController::class, 'getUsersWithCategory']);

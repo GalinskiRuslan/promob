@@ -314,4 +314,16 @@ class ApiUserController extends Controller
             );
         return response()->json(['message' => 'ok'], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
+    public function getUserById(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|numeric|exists:users,id',
+            ]);
+        } catch (JWTException $e) {
+            return response()->json(['message' => $e->getMessage()],  400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        $user = User::find($request->id);
+        return response()->json(['user' => $user], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
 }
