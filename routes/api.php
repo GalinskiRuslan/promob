@@ -1,10 +1,13 @@
 <?php
 
+
 use App\Http\Controllers\Api\ApiAppInformController;
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\ApiCitycontroller;
+use App\Http\Controllers\Api\ApiPaymentController;
 use App\Http\Controllers\Api\ApiPortfolioController;
 use App\Http\Controllers\Api\ApiUserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,3 +59,5 @@ Route::get('/addViewCount', [ApiUserController::class, 'addViewCount']);
 Route::get('/clickContacts', [ApiUserController::class, 'clickContacts']);
 Route::get('/getStatistic', [ApiUserController::class, 'getStatistic']);
 Route::get('/getComments', [ApiUserController::class, 'getComments']);
+
+Route::post('/testPay', [ApiPaymentController::class, 'generatePaymentLink']);
