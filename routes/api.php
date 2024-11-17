@@ -47,6 +47,7 @@ Route::get('/getUsersWithPagination', [ApiUserController::class, 'getUsersWithPa
 Route::get('/getUsersWithCity', [ApiUserController::class, 'getUsersWithCity']);
 Route::get('/getUsersWithCategory', [ApiUserController::class, 'getUsersWithCategory']);
 Route::get('/getUsersWithCityAndCategory', [ApiUserController::class, 'getUsersWithCityAndCategory']);
+Route::post('/addComment', [ApiUserController::class, 'addComment']);
 
 
 // Получение Данных о городе, категориях
@@ -59,5 +60,6 @@ Route::get('/addViewCount', [ApiUserController::class, 'addViewCount']);
 Route::get('/clickContacts', [ApiUserController::class, 'clickContacts']);
 Route::get('/getStatistic', [ApiUserController::class, 'getStatistic']);
 Route::get('/getComments', [ApiUserController::class, 'getComments']);
+Route::post('/ratingUpdate', [ApiUserController::class, 'updateRaitingUser']);
 
 Route::post('/testPay', [ApiPaymentController::class, 'generatePaymentLink']);

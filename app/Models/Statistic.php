@@ -24,6 +24,7 @@ class Statistic extends Model
         'user_id',
         'view_count',
         'click_contacts',
+        'view_profile',
     ];
 
     public function user()

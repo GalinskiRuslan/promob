@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Rating;
 use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
@@ -143,6 +144,8 @@ class ApiUserController extends Controller
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
             $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->rating = Rating::where('rated_user_id', $user->id)->get();
+            $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
         }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
@@ -187,6 +190,8 @@ class ApiUserController extends Controller
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
             $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->rating = Rating::where('rated_user_id', $user->id)->get();
+            $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
         }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
@@ -214,10 +219,13 @@ class ApiUserController extends Controller
             ],
         ], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
-    public function getUserInfo(Request $request)
+    public function getUserInfo()
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
+            $user->rating = Rating::where('rated_user_id', $user->id)->get();
+            $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
+            $user->comments = Comment::where('user_id', $user->id)->get();
             return response()->json(['user' => $user], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()], 401, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -323,8 +331,86 @@ class ApiUserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()],  400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
+        DB::table('table_statistics_for_executors')
+            ->updateOrInsert(
+                ['user_id' => $request->id],
+                ['view_profile' => DB::raw('view_profile + 1')]
+            );
         $user = User::find($request->id);
+        $user->rating = Rating::where('rated_user_id', $user->id)->get();
+        $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
         $user->comments = Comment::where('user_id', $user->id)->get();
         return response()->json(['user' => $user], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
+    public function addComment(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if ($user->role !== 'client') {
+                return response()->json(['message' => "нет прав на это действие"],  403, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['message' => "Ошибка авторизации"],  401, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        try {
+            $request->validate([
+                'comment' => 'required|string',
+                'target_user_id' => 'required|numeric|exists:users,id',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        $com = Comment::where('user_id', $user->id)
+            ->where('target_user_id', $request->target_user_id)->exists();
+        if ($com) {
+            Comment::where('user_id', $user->id)
+                ->where('target_user_id', $request->target_user_id)->update([
+                    'result' => $request->comment
+                ]);
+            return response()->json(['message' => "комментарий успешно обнавлён"], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        } else {
+            Comment::create([
+                'user_id' => $user->id,
+                'target_user_id' => $request->target_user_id,
+                'result' => $request->comment
+            ]);
+            return response()->json(['message' => "комментарий успешно добавлен"], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+    }
+    public function updateRaitingUser(Request $request)
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if ($user->role !== 'client') {
+                return response()->json(['message' => "нет прав на это действие"],  403, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['message' => "Ошибка авторизации"],  401, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        try {
+            $validated = $request->validate([
+                'rated_user_id' => 'required|exists:users,id',
+                'rating' => 'required|integer|min:1|max:5',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        $rating = Rating::where('user_id', $user->id)
+            ->where('rated_user_id', $validated['rated_user_id'])
+            ->exists();
+        if ($rating) {
+            Rating::where('user_id', $user->id)
+                ->where('rated_user_id', $validated['rated_user_id'])->update([
+                    'rating' => $validated['rating']
+                ]);
+            return response()->json(['message' => "рейтинг успешно обнавлён"], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        } else {
+            Rating::create([
+                'user_id' => $user->id,
+                'rated_user_id' => $validated['rated_user_id'],
+                'rating' => $validated['rating']
+            ]);
+            return response()->json(['message' => "рейтинг успешно добавлен"], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
     }
 }
