@@ -129,7 +129,7 @@ class ApiUserController extends Controller
                 ['user_id' => $user->id],           // Условие поиска записи
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
-            $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->comments = Comment::where('target_user_id', $user->id)->get();
         }
         return response()->json(['users' => $users], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
@@ -143,7 +143,7 @@ class ApiUserController extends Controller
                 ['user_id' => $user->id],           // Условие поиска записи
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
-            $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->comments = Comment::where('target_user_id', $user->id)->get();
             $user->rating = Rating::where('rated_user_id', $user->id)->get();
             $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
         }
@@ -167,7 +167,7 @@ class ApiUserController extends Controller
                 ['user_id' => $user->id],           // Условие поиска записи
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
-            $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->comments = Comment::where('target_user_id', $user->id)->get();
         }
         return response()->json([
             'data' => $users->items(), // Массив пользователей
@@ -189,7 +189,7 @@ class ApiUserController extends Controller
                 ['user_id' => $user->id],           // Условие поиска записи
                 ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
             );
-            $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->comments = Comment::where('target_user_id', $user->id)->get();
             $user->rating = Rating::where('rated_user_id', $user->id)->get();
             $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
         }
@@ -225,7 +225,7 @@ class ApiUserController extends Controller
             $user = JWTAuth::parseToken()->authenticate();
             $user->rating = Rating::where('rated_user_id', $user->id)->get();
             $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
-            $user->comments = Comment::where('user_id', $user->id)->get();
+            $user->comments = Comment::where('target_user_id', $user->id)->get();
             return response()->json(['user' => $user], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()], 401, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -339,7 +339,7 @@ class ApiUserController extends Controller
         $user = User::find($request->id);
         $user->rating = Rating::where('rated_user_id', $user->id)->get();
         $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
-        $user->comments = Comment::where('user_id', $user->id)->get();
+        $user->comments = Comment::where('target_user_id', $user->id)->get();
         return response()->json(['user' => $user], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
     public function addComment(Request $request)
