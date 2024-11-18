@@ -265,8 +265,8 @@ class ApiUserController extends Controller
             $request->validate([
                 'cost_from' => 'required|numeric|min:1|max:500000000',
                 'cost_up' => 'required|numeric|min:10|max:5000000000',
-                'details' => 'required|string|max:255|min:22',
-                'about_yourself' => 'required|string|max:255|min:22',
+                'details' => 'required|string|min:22',
+                'about_yourself' => 'required|string|min:22',
                 'cities_id' => 'required|numeric|exists:cities,id',
                 'language' => 'array',
             ]);
