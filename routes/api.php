@@ -62,4 +62,6 @@ Route::get('/getStatistic', [ApiUserController::class, 'getStatistic']);
 Route::get('/getComments', [ApiUserController::class, 'getComments']);
 Route::post('/ratingUpdate', [ApiUserController::class, 'updateRaitingUser']);
 
+
+
 Route::post('/testPay', [ApiPaymentController::class, 'generatePaymentLink']);
