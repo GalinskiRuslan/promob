@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Subscription;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class ApiPaymentController extends Controller
                 'products' => [
                     [
                         'name' => 'product_name',
-                        'price' => '10000',
+                        'price' => '500',
                         'quantity' => '1',
                         'tax' => [
                             'tax_type' => 0,
@@ -60,7 +61,13 @@ class ApiPaymentController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
-
+        Subscription::updateOrCreate(
+            ['user_id' => $user->id], // Условие для поиска
+            [
+                'payment_status' => 'pending',
+                'order_id' => $order // Данные для обновления или создания
+            ]
+        );
 
         return response()->json([
             'payment_link' => $link,
@@ -89,8 +96,13 @@ class ApiPaymentController extends Controller
             }
 
             // Логика для успешного запроса
-
-
+            $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->customer_phone])->first();
+            Subscription::updateOrCreate(
+                ['user_id' => $user->id], // Условие для поиска
+                [
+                    'payment_status' => 'paid',
+                ]
+            );
 
             return response('success', 200);
         } catch (Exception $e) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\Helpers;
 use App\Models\Comment;
 use App\Models\Rating;
 use App\Models\User;
@@ -237,6 +238,7 @@ class ApiUserController extends Controller
             $user->rating = Rating::where('rated_user_id', $user->id)->get();
             $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
             $user->comments = Comment::where('target_user_id', $user->id)->get();
+            $user->isActive = Helpers::isActiveUser($user);
             return response()->json(['user' => $user], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()], 401, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

@@ -64,4 +64,5 @@ Route::post('/ratingUpdate', [ApiUserController::class, 'updateRaitingUser']);
 
 
 
-Route::post('/testPay', [ApiPaymentController::class, 'generatePaymentLink']);
+Route::get('/testPay', [ApiPaymentController::class, 'generatePaymentLink']);
+Route::post('/hookPay', [ApiPaymentController::class, 'handle']);
