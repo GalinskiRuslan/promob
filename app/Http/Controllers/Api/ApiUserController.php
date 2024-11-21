@@ -162,7 +162,7 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
-        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->orderByRaw('gallery IS NOT NULL DESC')->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи
@@ -187,17 +187,22 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $category = $request->input('category');
         $users = User::whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $activeUsers = [];
         foreach ($users as $user) {
-            DB::table('table_statistics_for_executors')->updateOrInsert(
-                ['user_id' => $user->id],           // Условие поиска записи
-                ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
-            );
-            $user->comments = Comment::where('target_user_id', $user->id)->get();
-            $user->rating = Rating::where('rated_user_id', $user->id)->get();
-            $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
+            if (Helpers::isActiveUser($user)) {
+                DB::table('table_statistics_for_executors')->updateOrInsert(
+                    ['user_id' => $user->id],           // Условие поиска записи
+                    ['view_count' => DB::raw('COALESCE(view_count, 0) + 1')] // Увеличиваем view_count
+                );
+                $user->comments = Comment::where('target_user_id', $user->id)->get();
+                $user->rating = Rating::where('rated_user_id', $user->id)->get();
+                $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
+                $activeUsers[] = $user;
+            } else {
+            }
         }
         return response()->json([
-            'data' => $users->items(), // Массив пользователей
+            'data' => $activeUsers, // Массив пользователей
             'meta' => [
                 'current_page' => $users->currentPage(),
                 'per_page' => $users->perPage(),

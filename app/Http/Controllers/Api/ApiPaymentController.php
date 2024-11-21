@@ -80,11 +80,6 @@ class ApiPaymentController extends Controller
         $signature = $request->header('Sign');  // Получаем подпись из заголовков
 
         try {
-            // Проверяем, пустой ли запрос
-            if ($request->isEmpty()) {
-                throw new Exception('$_POST is empty', 400);
-            }
-
             // Проверяем, есть ли заголовок подписи
             if (empty($signature)) {
                 throw new Exception('Signature not found', 400);
@@ -94,6 +89,9 @@ class ApiPaymentController extends Controller
             if (!$this->verifySignature($request->all(), $secretKey, $signature)) {
                 throw new Exception('Signature incorrect', 400);
             }
+            if ($request->payment_status !== 'success') {
+                throw new Exception('Payment status incorrect', 400);
+            }
 
             // Логика для успешного запроса
             $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->customer_phone])->first();
@@ -101,9 +99,9 @@ class ApiPaymentController extends Controller
                 ['user_id' => $user->id], // Условие для поиска
                 [
                     'payment_status' => 'paid',
+                    'payment_expiry' => now()->addDays(30),
                 ]
             );
-
             return response('success', 200);
         } catch (Exception $e) {
 
