@@ -86,7 +86,7 @@ class ApiPaymentController extends Controller
             }
 
             // Проверяем корректность подписи
-            if (!$this->verifySignature($request->all(), $secretKey, $signature)) {
+            if (! \App\Http\Services\Helpers::verify($request->all(), $secretKey, $signature)) {
                 throw new Exception('Signature incorrect', 400);
             }
             if ($request->payment_status !== 'success') {
