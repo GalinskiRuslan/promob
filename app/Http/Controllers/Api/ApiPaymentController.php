@@ -95,6 +95,9 @@ class ApiPaymentController extends Controller
 
             // Логика для успешного запроса
             $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [preg_replace('/\D/', '', $request->customer_phone)])->first();
+            if (! $user) {
+                return response()->json(['error' => 'Пользователь не найден'], 400);
+            }
             Subscription::updateOrCreate(
                 ['user_id' => $user->id], // Условие для поиска
                 [
