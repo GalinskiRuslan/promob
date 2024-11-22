@@ -38,7 +38,7 @@ class ApiAppInformController extends Controller
         $categories = Category::all();
         foreach ($categories as $category) {
             // Подсчет пользователей, у которых в categories_id есть текущая категория
-            $category->users_count = User::whereRaw("JSON_CONTAINS(categories_id, ?)", ['["' . $category->id . '"]'])->where('cities_id', $request->city)->where(function ($query) {
+            $category->users_count = User::whereRaw("JSON_CONTAINS(categories_id, ?)", ['["' . $category->id . '"]'])->where('cities_id', $request->city)->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
                 $query->whereHas('subscription', function ($subQuery) {
                     $subQuery->where('payment_status', 'paid')
                         ->where('updated_at', '>=', now()->subDays(30));

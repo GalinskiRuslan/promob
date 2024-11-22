@@ -242,7 +242,7 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
         $category = $request->input('category');
-        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where(function ($query) {
+        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
             $query->whereHas('subscription', function ($subQuery) {
                 $subQuery->where('payment_status', 'paid')
                     ->where('updated_at', '>=', now()->subDays(30));
