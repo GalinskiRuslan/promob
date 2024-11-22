@@ -59,7 +59,7 @@ class ApiAuthController extends Controller
                 return response()->json(['message' => $e->getMessage()], 400);
             }
         } else {
-            return response()->json(['message' => 'Пользователь уже зарегистрирован'], 400);
+            return response()->json(['message' => 'Пользователь уже зарегистрирован'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
     }
     public function registrationWithSms(Request $request)
