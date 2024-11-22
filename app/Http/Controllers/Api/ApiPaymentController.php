@@ -43,7 +43,7 @@ class ApiPaymentController extends Controller
                     ],
                 ],
                 'do' => 'pay',
-                'urlNotification' => 'https://demo.payform.ru/demo-notification',
+                'discount_value' => '5000',
                 'payment_method' => 'ACkz',
                 'npd_income_type' => 'FROM_INDIVIDUAL',
             ];
