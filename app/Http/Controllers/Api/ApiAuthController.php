@@ -9,6 +9,7 @@ use App\Mail\VerificationMail;
 use App\Models\User;
 use App\Models\VerifySms;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -91,7 +92,7 @@ class ApiAuthController extends Controller
                 'role' => 'executor',
                 'password' => bcrypt($validated['password']),
                 'is_verified' => 1,
-                'created_at' => now()->diffInDays(30)
+                'created_at' => Carbon::now()->subDays(30),
             ]);
 
             $verifySms->delete();
