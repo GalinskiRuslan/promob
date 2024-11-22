@@ -36,7 +36,7 @@ class ApiPaymentController extends Controller
                     [
                         'name' => 'product_name',
                         'price' => '10000',
-                        'order_sum' => '5000',
+                        'discount_value' => '5000',
                         'quantity' => '1',
                         'paymentMethod' => 'ACkz ',
                         'paymentObject' => 3,
