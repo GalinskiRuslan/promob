@@ -30,6 +30,7 @@ class ApiAuthController extends Controller
         }
         if (!User::where('tel', $request->tel)->first() || !User::where('tel', $request->tel)->first()->is_verified) {
             $existingCode = VerifySms::where('tel', $request->tel)->first();
+            dd($existingCode);
             if ($existingCode && $existingCode->updated_at->diffInMinutes(now()) < 3) {
                 return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400);
             }
@@ -56,7 +57,6 @@ class ApiAuthController extends Controller
                     return response()->json(['message' => 'Код отправлен', 'code_id' => $code_id], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
                 }
             } catch (\Exception $e) {
-                dd($e);
                 return response()->json(['message' => $e->getMessage()], 400);
             }
         } else {
