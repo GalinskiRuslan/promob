@@ -26,12 +26,12 @@ class ApiAuthController extends Controller
                 'tel' => 'required|string|min:10|max:11',
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
-        if (!User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first() || !User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first()->is_verified) {
+        if (!User::where('tel', '+' . $request->tel)->first() || !User::where('tel', '+' . $request->tel)->first()->is_verified) {
             $existingCode = VerifySms::where('tel', '+' . $request->tel)->first();
             if ($existingCode && $existingCode->updated_at->diffInMinutes(now()) < 3) {
-                return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400);
+                return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             }
             try {
                 $verificationCode = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
@@ -134,7 +134,7 @@ class ApiAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-        $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first();
+        $user = User::where('tel', '+' . $request->tel)->first();
         if (!$user) {
             return response()->json(['message' => 'Пользователь не найден'], 400);
         }
