@@ -37,12 +37,12 @@ class ApiAuthController extends Controller
                 $verificationCode = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
                 $code_id = Str::uuid();
                 $smsService = new SmsController();
-                dd($smsService, $code_id);
             } catch (\Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 400);
             }
             try {
                 $response = $smsService->sendSMS($request->tel, $verificationCode);
+                dd($response);
                 if ($response->getData()->error) {
                     return response()->json(['message' => $response->getData()->error], 400);
                 } else {
