@@ -132,14 +132,14 @@ class ApiAuthController extends Controller
                 'password' => 'required|string|min:8',
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage()], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         $user = User::where('tel', '+' . $request->tel)->first();
         if (!$user) {
-            return response()->json(['message' => 'Пользователь не найден'], 400);
+            return response()->json(['message' => 'Пользователь не найден'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Неверный пароль'], 400);
+            return response()->json(['message' => 'Неверный пароль'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         $token = JWTAuth::fromUser($user);
         return response()->json(['token' => $token], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -153,7 +153,7 @@ class ApiAuthController extends Controller
     public function registerWithEmail(RegisterWithMailRequest $request)
     {
         if (User::where('email', $request->email)->first()) {
-            return response()->json(['message' => 'Пользователь уже зарегистрирован'], 400);
+            return response()->json(['message' => 'Пользователь уже зарегистрирован'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         $validated = $request->validated();
         $emailVerificationToken = Str::random(32);
@@ -182,7 +182,7 @@ class ApiAuthController extends Controller
         ]);
         $user = User::where('email_token', $validated['token'])->first();
         if (!$user) {
-            return response()->json(['message' => 'Пользователь не найден'], 400);
+            return response()->json(['message' => 'Пользователь не найден'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
         $user->update([
             'is_verified' => 1,
