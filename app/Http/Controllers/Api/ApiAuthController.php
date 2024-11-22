@@ -43,7 +43,6 @@ class ApiAuthController extends Controller
             try {
                 $response = $smsService->sendSMS($request->tel, $verificationCode);
                 if ($response->getData()->error) {
-                    dd($response->getData()->error);
                     return response()->json(['message' => $response->getData()->error], 400);
                 } else {
                     VerifySms::updateOrCreate(
@@ -56,6 +55,7 @@ class ApiAuthController extends Controller
                     return response()->json(['message' => 'Код отправлен', 'code_id' => $code_id], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
                 }
             } catch (\Exception $e) {
+                dd($e);
                 return response()->json(['message' => $e->getMessage()], 400);
             }
         } else {
