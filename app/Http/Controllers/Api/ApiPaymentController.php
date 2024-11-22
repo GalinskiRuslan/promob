@@ -59,13 +59,34 @@ class ApiPaymentController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
-        Subscription::updateOrCreate(
-            ['user_id' => $user->id], // Условие для поиска
-            [
-                'payment_status' => 'pending',
-                'order_id' => $order // Данные для обновления или создания
-            ]
-        );
+        $userSubscribe = Subscription::where('user_id', $user->id)->first();
+        if ($userSubscribe) {
+            if ($userSubscribe->payment_status === 'pending') {
+                Subscription::updateOrCreate(
+                    ['user_id' => $user->id], // Условие для поиска
+                    [
+                        'payment_status' => 'pending',
+                        'order_id' => $order // Данные для обновления или создания
+                    ]
+                );
+            } else if ($userSubscribe->payment_status === 'paid' && $userSubscribe->updated_at->diffInDays(now()) < 30) {
+                $daysLeft = floor(31 - $userSubscribe->updated_at->diffInDays(now()));
+                return response()->json([
+                    'payment_link' => $link,
+                    'order' => $order,
+                    'is_active' => true,
+                    'days_left' => $daysLeft,
+                ]);
+            }
+        } else {
+            Subscription::updateOrCreate(
+                ['user_id' => $user->id], // Условие для поиска
+                [
+                    'payment_status' => 'pending',
+                    'order_id' => $order // Данные для обновления или создания
+                ]
+            );
+        }
 
         return response()->json([
             'payment_link' => $link,
