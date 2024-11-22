@@ -56,7 +56,7 @@ class Helpers
 
         if ($payment) {
             if ($payment->payment_status == 'paid' && $payment->updated_at->diffInDays(now()) < 30) {
-                $daysLeft = floor(30 - $payment->updated_at->diffInDays(now()));
+                $daysLeft = floor(31 - $payment->updated_at->diffInDays(now()));
                 return ['is_active' => true, 'days_left' => $daysLeft];
             } else {
                 return false;
