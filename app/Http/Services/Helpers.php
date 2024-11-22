@@ -54,16 +54,16 @@ class Helpers
     {
         $payment = Subscription::where('user_id', $user->id)->first();
 
-        if ($user->created_at->diffInDays(now()) < 30) {
-            $daysLeft = floor(30 - $user->created_at->diffInDays(now()));
-            return ['is_active' => true, 'days_left' => $daysLeft];
-        } else if ($payment) {
+        if ($payment) {
             if ($payment->payment_status == 'paid' && $payment->updated_at->diffInDays(now()) < 30) {
                 $daysLeft = floor(30 - $payment->updated_at->diffInDays(now()));
                 return ['is_active' => true, 'days_left' => $daysLeft];
             } else {
                 return false;
             }
+        } else if ($user->created_at->diffInDays(now()) < 30) {
+            $daysLeft = floor(30 - $user->created_at->diffInDays(now()));
+            return ['is_active' => true, 'days_left' => $daysLeft];
         } else {
             return false;
         }
