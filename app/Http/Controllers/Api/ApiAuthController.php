@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use App\Http\Requests\RegisterWithMailRequest;
 use App\Mail\VerificationMail;
-use App\Http\Services\SmsService;
-use App\Models\City;
 use App\Models\User;
 use App\Models\VerifySms;
 use Illuminate\Http\Request;
@@ -35,9 +33,13 @@ class ApiAuthController extends Controller
             if ($existingCode && $existingCode->updated_at->diffInMinutes(now()) < 3) {
                 return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400);
             }
-            $verificationCode = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-            $code_id = Str::uuid();
-            $smsService = new SmsController();
+            try {
+                $verificationCode = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+                $code_id = Str::uuid();
+                $smsService = new SmsController();
+            } catch (\Exception $e) {
+                return response()->json(['message' => $e->getMessage()], 400);
+            }
             try {
                 $response = $smsService->sendSMS($request->tel, $verificationCode);
                 if ($response->getData()->error) {
