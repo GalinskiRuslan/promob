@@ -41,15 +41,13 @@ class ApiPaymentController extends Controller
                             'tax_type' => 0,
                             'tax_sum' => 0,
                         ],
-                        'paymentMethod' => 'ACkz',
+                        'paymentMethod' => 'AC',
                         'paymentObject' => 3,
                     ],
                 ],
                 'do' => 'pay',
-                'urlReturn' => 'https://demo.payform.ru/demo-return',
-                'urlSuccess' => 'https://demo.payform.ru/demo-success',
                 'urlNotification' => 'https://demo.payform.ru/demo-notification',
-                'payment_method' => 'ACkz',
+                'payment_method' => 'AC',
                 'npd_income_type' => 'FROM_INDIVIDUAL',
             ];
 
