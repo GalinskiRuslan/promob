@@ -35,19 +35,16 @@ class ApiPaymentController extends Controller
                 'products' => [
                     [
                         'name' => 'product_name',
-                        'price' => '500',
+                        'price' => '10000',
+                        'order_sum' => '5000',
                         'quantity' => '1',
-                        'tax' => [
-                            'tax_type' => 0,
-                            'tax_sum' => 0,
-                        ],
-                        'paymentMethod' => 'AC',
+                        'paymentMethod' => 'ACkz ',
                         'paymentObject' => 3,
                     ],
                 ],
                 'do' => 'pay',
                 'urlNotification' => 'https://demo.payform.ru/demo-notification',
-                'payment_method' => 'AC',
+                'payment_method' => 'ACkz',
                 'npd_income_type' => 'FROM_INDIVIDUAL',
             ];
 
