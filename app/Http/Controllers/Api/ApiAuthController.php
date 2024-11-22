@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
-        if (User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first() || !User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first()->is_verified) {
+        if (!User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first() || !User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', '') = ?", [$request->tel])->first()->is_verified) {
             $existingCode = VerifySms::where('tel', '+' . $request->tel)->first();
             if ($existingCode && $existingCode->updated_at->diffInMinutes(now()) < 3) {
                 return response()->json(['message' => 'Код можно отправить только раз в 3 минуты'], 400);
