@@ -42,8 +42,9 @@ class ApiAuthController extends Controller
             }
             try {
                 $response = $smsService->sendSMS($request->tel, $verificationCode);
-                if ($response->getData()->error) {
-                    return response()->json(['message' => $response->getData()->error], 400);
+                $data = $response->getData();
+                if (isset($data->error)) {
+                    return response()->json(['message' => $data->error], 400);
                 } else {
                     VerifySms::updateOrCreate(
                         ['tel' => '+' . $request->tel],
