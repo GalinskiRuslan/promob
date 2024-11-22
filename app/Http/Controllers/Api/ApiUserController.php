@@ -138,7 +138,15 @@ class ApiUserController extends Controller
     {
         // Получаем номер страницы и количество элементов на странице из запроса (по умолчанию 10)
         $perPage = $request->input('per_page', 10);
-        $users = User::where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
+            $query->whereHas('subscription', function ($subQuery) {
+                $subQuery->where('payment_status', 'paid')
+                    ->where('updated_at', '>=', now()->subDays(30));
+            })
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                });
+        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи
@@ -162,7 +170,15 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
-        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
+            $query->whereHas('subscription', function ($subQuery) {
+                $subQuery->where('payment_status', 'paid')
+                    ->where('updated_at', '>=', now()->subDays(30));
+            })
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                });
+        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи
@@ -186,8 +202,19 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $category = $request->input('category');
-        $users = User::whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->paginate($perPage, ['*'], 'page', $request->input('page', 1));
-        $activeUsers = [];
+        $users = User::whereJsonContains('categories_id', [$category])
+            ->whereNotNull('photos')
+            ->whereNotNull('cost_from')
+            ->where(function ($query) {
+                $query->whereHas('subscription', function ($subQuery) {
+                    $subQuery->where('payment_status', 'paid')
+                        ->where('updated_at', '>=', now()->subDays(30));
+                })
+                    ->orWhere(function ($query) {
+                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                    });
+            })
+            ->paginate($perPage, ['*'], 'page', $request->input('page', 10));
         foreach ($users as $user) {
             if (Helpers::isActiveUser($user)) {
                 DB::table('table_statistics_for_executors')->updateOrInsert(
@@ -197,12 +224,11 @@ class ApiUserController extends Controller
                 $user->comments = Comment::where('target_user_id', $user->id)->get();
                 $user->rating = Rating::where('rated_user_id', $user->id)->get();
                 $user->ratingAverage = Rating::where('rated_user_id', $user->id)->avg('rating');
-                $activeUsers[] = $user;
             } else {
             }
         }
         return response()->json([
-            'data' => $activeUsers, // Массив пользователей
+            'data' => $users->items(), // Массив пользователей
             'meta' => [
                 'current_page' => $users->currentPage(),
                 'per_page' => $users->perPage(),
@@ -216,7 +242,15 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
         $category = $request->input('category');
-        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where(function ($query) {
+            $query->whereHas('subscription', function ($subQuery) {
+                $subQuery->where('payment_status', 'paid')
+                    ->where('updated_at', '>=', now()->subDays(30));
+            })
+                ->orWhere(function ($query) {
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                });
+        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи

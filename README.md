@@ -67,4 +67,74 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ubuntu 194.32.141.254 MVxD+uTCa/56F4+0QKdNS10=
 
+server {
+server_name promobilograf.kz www.promobilograf.kz;
+root /var/www/promob/public;
+client_max_body_size 120M;
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
 
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_param PHP_VALUE "upload_max_filesize=128M \n post_max_size=128M";
+        fastcgi_hide_header X-Powered-By;
+    }
+            location ~ /\.ht { deny all;
+
+    }
+
+location ~ /\.(?!well-known)._ { deny all;
+}
+location ~_ \.(jpg|jpeg|png|gif|css|js|ico|svg|woff2?)$ { expires
+365d; access_log off;}
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/promobilograf.kz/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/promobilograf.kz/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+if ($host = promobilograf.kz) {
+        return 301 https://$host$request_uri;
+} # managed by Certbot
+
+    listen 80;
+    listen [::]:80;
+    server_name promobilograf.kz www.promobilograf.kz;
+    return 404; # managed by Certbot
+
+}
+server {
+listen 80;
+server_name TEST.codeart.kz;
+
+    location / {
+        proxy_pass http://localhost:3000;  # Перенаправление на Node.js приложение на порту 3000
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+}

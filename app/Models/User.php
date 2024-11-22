@@ -52,6 +52,7 @@ class User extends Authenticatable implements JWTSubject
         'gallery',
         'role',
         'email_token',
+        'isActive'
     ];
 
     /**
@@ -87,7 +88,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Statistic::class, 'user_id');
     }
 
-
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class, 'user_id');
+    }
     public function scopeWithCategoriesAndCity($query, array $categories, $cityId)
     {
         $query->where('cities_id', $cityId);
