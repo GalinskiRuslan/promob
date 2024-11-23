@@ -135,7 +135,7 @@ class ApiAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
-        $user = User::where('tel', '+' . $request->tel)->first();
+        $user = User::where('tel', $request->tel)->first();
         if (!$user) {
             return response()->json(['message' => 'Пользователь не найден'], 400, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
