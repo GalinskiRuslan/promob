@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Helpers\Hmac;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -27,8 +28,8 @@ class ApiPaymentController extends Controller
             return response()->json(['error' => 'Token is invalid'], 401);
         }
         $order = strtoupper(uniqid());
-        try {
-            // Gather data for the payment link
+        // Gather data for the payment link
+        if ($user->created_at > Carbon::parse('2024-11-22')) {
             $data = [
                 'order_id' => $order,
                 'customer_phone' => preg_replace('/\D/', '', $user->tel),
@@ -36,7 +37,6 @@ class ApiPaymentController extends Controller
                     [
                         'name' => 'product_name',
                         'price' => '10000',
-                        'discount_value' => '5000',
                         'quantity' => '1',
                         'paymentMethod' => 'ACkz ',
                         'paymentObject' => 3,
@@ -47,7 +47,25 @@ class ApiPaymentController extends Controller
                 'payment_method' => 'ACkz',
                 'npd_income_type' => 'FROM_INDIVIDUAL',
             ];
-
+        } else {
+            $data = [
+                'order_id' => $order,
+                'customer_phone' => preg_replace('/\D/', '', $user->tel),
+                'products' => [
+                    [
+                        'name' => 'product_name',
+                        'price' => '10000',
+                        'quantity' => '1',
+                        'paymentMethod' => 'ACkz ',
+                        'paymentObject' => 3,
+                    ],
+                ],
+                'do' => 'pay',
+                'payment_method' => 'ACkz',
+                'npd_income_type' => 'FROM_INDIVIDUAL',
+            ];
+        }
+        try {
             // Generate the signature
             $data['signature'] = \App\Http\Services\Helpers::createHmac($data, $secretKey);
 

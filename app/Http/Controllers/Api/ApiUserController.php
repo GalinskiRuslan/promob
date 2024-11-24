@@ -7,6 +7,7 @@ use App\Http\Services\Helpers;
 use App\Models\Comment;
 use App\Models\Rating;
 use App\Models\User;
+use Carbon\Carbon;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Exception;
 use Illuminate\Http\Request;
@@ -144,7 +145,8 @@ class ApiUserController extends Controller
                     ->where('updated_at', '>=', now()->subDays(30));
             })
                 ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
         })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
@@ -176,7 +178,8 @@ class ApiUserController extends Controller
                     ->where('updated_at', '>=', now()->subDays(30));
             })
                 ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
         })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
@@ -211,7 +214,8 @@ class ApiUserController extends Controller
                         ->where('updated_at', '>=', now()->subDays(30));
                 })
                     ->orWhere(function ($query) {
-                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                            ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                     });
             })
             ->paginate($perPage, ['*'], 'page', $request->input('page', 10));
@@ -248,7 +252,8 @@ class ApiUserController extends Controller
                     ->where('updated_at', '>=', now()->subDays(30));
             })
                 ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
         })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ApiAppInformController extends Controller
 {
@@ -21,7 +22,8 @@ class ApiAppInformController extends Controller
                         ->where('updated_at', '>=', now()->subDays(30));
                 })
                     ->orWhere(function ($query) {
-                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                            ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                     });
             })->count();
             $category->users_count += User::whereJsonContains('categories_id', $category->id)->count();
@@ -44,7 +46,8 @@ class ApiAppInformController extends Controller
                         ->where('updated_at', '>=', now()->subDays(30));
                 })
                     ->orWhere(function ($query) {
-                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30');
+                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
+                            ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                     });
             })->count();
         }

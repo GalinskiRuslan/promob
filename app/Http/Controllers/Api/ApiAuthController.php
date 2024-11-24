@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SmsController;
 use App\Http\Requests\RegisterWithMailRequest;
 use App\Mail\VerificationMail;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\VerifySms;
 use Illuminate\Http\Request;
@@ -42,20 +43,20 @@ class ApiAuthController extends Controller
                 return response()->json(['message' => $e->getMessage()], 400);
             }
             try {
-                $response = $smsService->sendSMS($request->tel, $verificationCode);
-                $data = $response->getData();
-                if (isset($data->error)) {
-                    return response()->json(['message' => $data->error], 400);
-                } else {
-                    VerifySms::updateOrCreate(
-                        ['tel' => '+' . $request->tel],
-                        [
-                            'code_id' => $code_id,
-                            'code' => $verificationCode
-                        ]
-                    );
-                    return response()->json(['message' => 'Код отправлен', 'code_id' => $code_id], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-                }
+                // $response = $smsService->sendSMS($request->tel, $verificationCode);
+                // $data = $response->getData();
+                // if (isset($data->error)) {
+                //     return response()->json(['message' => $data->error], 400);
+                // } else {
+                VerifySms::updateOrCreate(
+                    ['tel' => '+' . $request->tel],
+                    [
+                        'code_id' => $code_id,
+                        'code' => $verificationCode
+                    ]
+                );
+                return response()->json(['message' => 'Код отправлен', 'code_id' => $code_id], 200, [],  JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                // }
             } catch (\Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 400);
             }
@@ -91,11 +92,14 @@ class ApiAuthController extends Controller
                 'tel' => $verifySms->tel,
                 'role' => 'executor',
                 'password' => bcrypt($validated['password']),
-                'is_verified' => 1,
-                'created_at' => Carbon::now()->subDays(30),
+                'is_verified' => 1
             ]);
 
             $verifySms->delete();
+            Subscription::create([
+                'user_id' => $user->id,
+                'payment_status' => 'expired'
+            ]);
             DB::commit();
 
             return response()->json(['message' => 'Регистрация прошла успешно', 'token' => JWTAuth::fromUser($user)], 200);

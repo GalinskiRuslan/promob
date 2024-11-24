@@ -3,6 +3,8 @@
 namespace App\Http\Services;
 
 use App\Models\Subscription;
+use Exception;
+use Illuminate\Support\Carbon;
 
 class Helpers
 {
@@ -67,5 +69,20 @@ class Helpers
         } else {
             return false;
         }
+    }
+    static function isUserRegisteredRelativeToDate($user, $date, $comparison = 'after')
+    {
+        // Преобразуем дату в Carbon
+        $date = $date instanceof Carbon ? $date : Carbon::parse($date);
+
+        // Проверяем дату создания пользователя
+        if ($comparison === 'after') {
+            return $user->created_at->gt($date); // позже указанной даты
+        } elseif ($comparison === 'before') {
+            return $user->created_at->lt($date); // раньше указанной даты
+        }
+
+        // Если тип сравнения некорректный, выбрасываем исключение
+        throw new Exception("Invalid comparison type. Use 'after' or 'before'.");
     }
 }
