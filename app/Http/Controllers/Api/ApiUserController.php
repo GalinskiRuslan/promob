@@ -148,7 +148,15 @@ class ApiUserController extends Controller
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
                         ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
-        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        });
+        if ($request->has('sortByRating')) {
+            $users->withCount([
+                'receivedRatings as average_rating' => function ($ratingQuery) {
+                    $ratingQuery->select(DB::raw('AVG(rating)'));
+                }
+            ])->orderByDesc('average_rating');
+        }
+        $users = $users->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи
@@ -181,7 +189,15 @@ class ApiUserController extends Controller
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
                         ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
-        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        });
+        if ($request->has('sortByRating')) {
+            $users->withCount([
+                'receivedRatings as average_rating' => function ($ratingQuery) {
+                    $ratingQuery->select(DB::raw('AVG(rating)'));
+                }
+            ])->orderByDesc('average_rating');
+        }
+        $users = $users->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи
@@ -217,8 +233,15 @@ class ApiUserController extends Controller
                         $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
                             ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                     });
-            })
-            ->paginate($perPage, ['*'], 'page', $request->input('page', 10));
+            });
+        if ($request->has('sortByRating')) {
+            $users->withCount([
+                'receivedRatings as average_rating' => function ($ratingQuery) {
+                    $ratingQuery->select(DB::raw('AVG(rating)'));
+                }
+            ])->orderByDesc('average_rating');
+        }
+        $users = $users->paginate($perPage, ['*'], 'page', $request->input('page', 1));
         foreach ($users as $user) {
             if (Helpers::isActiveUser($user)) {
                 DB::table('table_statistics_for_executors')->updateOrInsert(
@@ -255,7 +278,16 @@ class ApiUserController extends Controller
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
                         ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
                 });
-        })->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+        });
+        if ($request->has('sortByRating')) {
+            $users->withCount([
+                'receivedRatings as average_rating' => function ($ratingQuery) {
+                    $ratingQuery->select(DB::raw('AVG(rating)'));
+                }
+            ])->orderByDesc('average_rating');
+        }
+        $users = $users->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+
         foreach ($users as $user) {
             DB::table('table_statistics_for_executors')->updateOrInsert(
                 ['user_id' => $user->id],           // Условие поиска записи

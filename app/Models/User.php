@@ -124,4 +124,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Comment::class, 'target_user_id');
     }
+    public function receivedRatings()
+    {
+        return $this->hasMany(Rating::class, 'rated_user_id');
+    }
 }
