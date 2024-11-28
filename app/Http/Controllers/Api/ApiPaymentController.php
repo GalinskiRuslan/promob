@@ -36,14 +36,13 @@ class ApiPaymentController extends Controller
                 'products' => [
                     [
                         'name' => 'product_name',
-                        'price' => '10000',
+                        'price' => '3000',
                         'quantity' => '1',
                         'paymentMethod' => 'ACkz ',
                         'paymentObject' => 3,
                     ],
                 ],
                 'do' => 'pay',
-                'discount_value' => '5000',
                 'payment_method' => 'ACkz',
                 'npd_income_type' => 'FROM_INDIVIDUAL',
             ];
@@ -54,7 +53,7 @@ class ApiPaymentController extends Controller
                 'products' => [
                     [
                         'name' => 'product_name',
-                        'price' => '10000',
+                        'price' => '3000',
                         'quantity' => '1',
                         'paymentMethod' => 'ACkz ',
                         'paymentObject' => 3,
