@@ -57,14 +57,14 @@ class Helpers
         $payment = Subscription::where('user_id', $user->id)->first();
 
         if ($payment) {
-            if ($payment->payment_status == 'paid' && $payment->updated_at->diffInDays(now()) < 30) {
-                $daysLeft = floor(31 - $payment->updated_at->diffInDays(now()));
+            if ($payment->payment_status == 'paid' && now()->diffInDays($payment->payment_expiry) > 0) {
+                $daysLeft = ceil(now()->diffInDays($payment->payment_expiry, false));
                 return ['is_active' => true, 'days_left' => $daysLeft];
             } else {
                 return false;
             }
         } else if ($user->created_at->diffInDays(now()) < 30) {
-            $daysLeft = floor(30 - $user->created_at->diffInDays(now()));
+            $daysLeft = ceil(30 - $user->created_at->diffInDays(now()));
             return ['is_active' => true, 'days_left' => $daysLeft];
         } else {
             return false;

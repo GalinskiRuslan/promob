@@ -83,8 +83,8 @@ class ApiPaymentController extends Controller
                         'order_id' => $order // Данные для обновления или создания
                     ]
                 );
-            } else if ($userSubscribe->payment_status === 'paid' && $userSubscribe->updated_at->diffInDays(now()) < 30) {
-                $daysLeft = floor(31 - $userSubscribe->updated_at->diffInDays(now()));
+            } else if ($userSubscribe->payment_status === 'paid' && now()->diffInDays($userSubscribe->payment_expiry) > 0) {
+                $daysLeft = ceil(now()->diffInDays($userSubscribe->payment_expiry, false));
                 return response()->json([
                     'payment_link' => $link,
                     'order' => $order,

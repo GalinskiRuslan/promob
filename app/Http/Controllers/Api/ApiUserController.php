@@ -142,7 +142,7 @@ class ApiUserController extends Controller
         $users = User::where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
             $query->whereHas('subscription', function ($subQuery) {
                 $subQuery->where('payment_status', 'paid')
-                    ->where('updated_at', '>=', now()->subDays(30));
+                    ->where('payment_expiry', '>=', now());
             })
                 ->orWhere(function ($query) {
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
@@ -183,7 +183,7 @@ class ApiUserController extends Controller
         $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
             $query->whereHas('subscription', function ($subQuery) {
                 $subQuery->where('payment_status', 'paid')
-                    ->where('updated_at', '>=', now()->subDays(30));
+                    ->where('payment_expiry', '>=', now());
             })
                 ->orWhere(function ($query) {
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
@@ -227,7 +227,7 @@ class ApiUserController extends Controller
             ->where(function ($query) {
                 $query->whereHas('subscription', function ($subQuery) {
                     $subQuery->where('payment_status', 'paid')
-                        ->where('updated_at', '>=', now()->subDays(30));
+                        ->where('payment_expiry', '>=', now());
                 })
                     ->orWhere(function ($query) {
                         $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
@@ -272,7 +272,7 @@ class ApiUserController extends Controller
         $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
             $query->whereHas('subscription', function ($subQuery) {
                 $subQuery->where('payment_status', 'paid')
-                    ->where('updated_at', '>=', now()->subDays(30));
+                    ->where('payment_expiry', '>=', now());
             })
                 ->orWhere(function ($query) {
                     $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
