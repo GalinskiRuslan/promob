@@ -128,18 +128,26 @@ class ApiPaymentController extends Controller
 
             // Логика для успешного запроса
             $user = User::whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tel, ' ', ''), '(', ''), ')', ''), '-', ''), '+', '') = ?", [preg_replace('/\D/', '', $request->customer_phone)])->first();
-            // $user = User::where('tel', '+79999999999')->first();
             if (! $user) {
                 return response()->json(['error' => 'Пользователь не найден'], 400);
             }
-            Subscription::updateOrCreate(
+            $subscription = Subscription::firstOrCreate(
                 ['user_id' => $user->id], // Условие для поиска
                 [
                     'payment_status' => 'paid',
-                    'payment_expiry' => now()->addDays(30),
+                    'payment_expiry' => now(), // Установим начальную дату, если создаём новую подписку
                 ]
             );
-            return response('success', 200);
+            if ($subscription->payment_expiry > now()) {
+                $newExpiryDate = $subscription->payment_expiry->addDays(30);
+            } else {
+                $newExpiryDate = now()->addDays(30);
+            }
+            $subscription->update([
+                'payment_status' => 'paid',
+                'payment_expiry' => $newExpiryDate,
+            ]);
+            return response('success new expiry date' . $newExpiryDate, 200);
         } catch (Exception $e) {
 
             return response()->json([
