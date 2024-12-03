@@ -98,7 +98,8 @@ class ApiAuthController extends Controller
             $verifySms->delete();
             Subscription::create([
                 'user_id' => $user->id,
-                'payment_status' => 'expired'
+                'payment_status' => 'paid',
+                'payment_expiry' => now()->addDays(30)
             ]);
             DB::commit();
 
