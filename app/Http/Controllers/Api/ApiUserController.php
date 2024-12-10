@@ -139,16 +139,7 @@ class ApiUserController extends Controller
     {
         // Получаем номер страницы и количество элементов на странице из запроса (по умолчанию 10)
         $perPage = $request->input('per_page', 10);
-        $users = User::where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
-            $query->whereHas('subscription', function ($subQuery) {
-                $subQuery->where('payment_status', 'paid')
-                    ->where('payment_expiry', '>=', now());
-            })
-                ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
-                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
-                });
-        });
+        $users = User::where('photos', '!=', null)->where('cost_from', '!=', null);
         if ($request->has('sortByRating')) {
             $users->withCount([
                 'receivedRatings as average_rating' => function ($ratingQuery) {
@@ -180,16 +171,7 @@ class ApiUserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
-        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
-            $query->whereHas('subscription', function ($subQuery) {
-                $subQuery->where('payment_status', 'paid')
-                    ->where('payment_expiry', '>=', now());
-            })
-                ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
-                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
-                });
-        });
+        $users = User::where('cities_id', $city)->where('photos', '!=', null)->where('cost_from', '!=', null);
         if ($request->has('sortByRating')) {
             $users->withCount([
                 'receivedRatings as average_rating' => function ($ratingQuery) {
@@ -223,17 +205,7 @@ class ApiUserController extends Controller
         $category = $request->input('category');
         $users = User::whereJsonContains('categories_id', [$category])
             ->whereNotNull('photos')
-            ->whereNotNull('cost_from')
-            ->where(function ($query) {
-                $query->whereHas('subscription', function ($subQuery) {
-                    $subQuery->where('payment_status', 'paid')
-                        ->where('payment_expiry', '>=', now());
-                })
-                    ->orWhere(function ($query) {
-                        $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
-                            ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
-                    });
-            });
+            ->whereNotNull('cost_from');
         if ($request->has('sortByRating')) {
             $users->withCount([
                 'receivedRatings as average_rating' => function ($ratingQuery) {
@@ -269,16 +241,7 @@ class ApiUserController extends Controller
         $perPage = $request->input('per_page', 10);
         $city = $request->input('city');
         $category = $request->input('category');
-        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null)->where(function ($query) {
-            $query->whereHas('subscription', function ($subQuery) {
-                $subQuery->where('payment_status', 'paid')
-                    ->where('payment_expiry', '>=', now());
-            })
-                ->orWhere(function ($query) {
-                    $query->whereRaw('DATEDIFF(NOW(), created_at) < 30')
-                        ->where('created_at', '<', Carbon::parse('2024-11-22')); // Условие на дату
-                });
-        });
+        $users = User::where('cities_id', $city)->whereJsonContains('categories_id', [$category])->where('photos', '!=', null)->where('cost_from', '!=', null);
         if ($request->has('sortByRating')) {
             $users->withCount([
                 'receivedRatings as average_rating' => function ($ratingQuery) {
@@ -501,5 +464,10 @@ class ApiUserController extends Controller
             ]);
             return response()->json(['message' => "рейтинг успешно добавлен"], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
+    }
+    public function getRandomUsers(Request $request)
+    {
+        $users = User::where('role', 'executor')->inRandomOrder()->limit(30)->get();
+        return response()->json(['users' => $users], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 }
